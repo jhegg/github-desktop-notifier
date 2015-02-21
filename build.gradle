@@ -10,7 +10,11 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.6'
     compile 'org.controlsfx:controlsfx:8.20.8'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+
     runtime 'commons-cli:commons-cli:1.2'
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testRuntime 'cglib:cglib-nodep:3.1'
 }
 
 mainClassName = 'com.jhegg.github.notifier.App'

@@ -53,4 +53,8 @@ class CenterLayoutController {
         if (App.userName)
             githubService.restart() // todo This is not an ideal usage for proper error handling
     }
+
+    void displayError(String errorMessage) {
+        textArea.setText(errorMessage)
+    }
 }

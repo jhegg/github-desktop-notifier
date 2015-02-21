@@ -39,7 +39,7 @@ class GithubService extends Service<String> {
     @Override
     protected void failed() {
         super.failed()
-        layoutController.textArea.setText("Failed retrieving results from ${getResolvedUrl()} due to:\n ${getException()}")
+        layoutController.displayError("Failed retrieving results from ${getResolvedUrl()} due to:\n ${getException()}")
     }
 
     String getResolvedUrl() {

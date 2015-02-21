@@ -1,3 +1,2 @@
 language: groov
 jdk: oraclejdk8
-script: ./gradlew

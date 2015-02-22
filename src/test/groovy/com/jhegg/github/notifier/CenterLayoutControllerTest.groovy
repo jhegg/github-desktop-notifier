@@ -106,4 +106,16 @@ class CenterLayoutControllerTest extends Specification {
         1 * githubService.setApp(app)
         1 * githubService.start()
     }
+
+    def "displayTextArea with an event that has json"() {
+        setup:
+        def githubEvent = new GithubEvent(id: "123", json: "{\"id\": \"123\"}")
+        centerLayoutController.textArea = new TextArea()
+
+        when:
+        centerLayoutController.displayTextArea(githubEvent)
+
+        then:
+        centerLayoutController.textArea.getText() == "{\n    \"id\": \"123\"\n}"
+    }
 }

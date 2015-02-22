@@ -41,7 +41,7 @@ class CenterLayoutController {
         }
     }
 
-    private void displayTextArea(GithubEvent event) {
+    void displayTextArea(GithubEvent event) {
         if (event != null )
             textArea.setText(JsonOutput.prettyPrint(event.json))
     }

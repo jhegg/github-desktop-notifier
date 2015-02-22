@@ -4,6 +4,7 @@ import javafx.collections.ObservableList
 import javafx.embed.swing.JFXPanel
 import javafx.scene.control.ListView
 import javafx.scene.control.MultipleSelectionModel
+import javafx.scene.control.TextArea
 import spock.lang.Specification
 
 class CenterLayoutControllerTest extends Specification {
@@ -22,7 +23,7 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.listView = listView
     }
 
-    def "UpdateEvents with empty list"() {
+    def "updateEvents with empty list"() {
         when:
         centerLayoutController.updateEvents([] as List<GithubEvent>)
 
@@ -31,7 +32,7 @@ class CenterLayoutControllerTest extends Specification {
         0 * selectionModel.selectFirst()
     }
 
-    def "UpdateEvents with single event in list"() {
+    def "updateEvents with single event in list"() {
         when:
         def events = [new GithubEvent(id: "1")] as List<GithubEvent>
         centerLayoutController.updateEvents(events)
@@ -39,5 +40,16 @@ class CenterLayoutControllerTest extends Specification {
         then:
         1 * observableList.setAll({it.size() == 1})
         1 * selectionModel.selectFirst()
+    }
+
+    def "displayError"() {
+        setup:
+        centerLayoutController.textArea = new TextArea()
+
+        when:
+        centerLayoutController.displayError("error message")
+
+        then:
+        centerLayoutController.textArea.getText() == "error message"
     }
 }

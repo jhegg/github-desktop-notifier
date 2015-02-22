@@ -1,5 +1,6 @@
 package com.jhegg.github.notifier
 
+import groovyx.net.http.HTTPBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -82,6 +83,29 @@ class GithubServiceTest extends Specification {
             events[0].created_at == "2015-02-01T01:02:03Z"
             !events[0].json.isEmpty()
         })
+    }
+
+    def "service creation"() {
+        setup:
+        service.github = Mock(HTTPBuilder)
+
+        when:
+        service.createTask().call()
+
+        then:
+        1 * service.github.setUri(_)
+        1 * service.github.get(*_)
+    }
+
+    def "setController"() {
+        setup:
+        def newController = Mock(CenterLayoutController)
+
+        when:
+        service.setController(newController)
+
+        then:
+        service.layoutController == newController
     }
 
     String getExampleSinglePushPayload() {

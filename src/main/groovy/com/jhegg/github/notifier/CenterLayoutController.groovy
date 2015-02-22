@@ -18,7 +18,7 @@ class CenterLayoutController {
 
     App app
 
-    GithubService githubService
+    GithubService githubService = new GithubService()
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
@@ -31,7 +31,6 @@ class CenterLayoutController {
     }
 
     public void initializeGithubService() {
-        githubService = new GithubService()
         githubService.setController(this)
         githubService.setApp(app)
 

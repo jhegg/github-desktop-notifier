@@ -78,4 +78,32 @@ class CenterLayoutControllerTest extends Specification {
         then:
         1 * githubService.restart()
     }
+
+    def "initializeGithubService without userName"() {
+        setup:
+        app.getUserName() >> GString.EMPTY
+        centerLayoutController.textArea = new TextArea()
+
+        when:
+        centerLayoutController.initializeGithubService()
+
+        then:
+        1 * githubService.setController(centerLayoutController)
+        1 * githubService.setApp(app)
+        0 * githubService.start()
+        !centerLayoutController.textArea.getText().isEmpty()
+    }
+
+    def "initializeGithubService with userName"() {
+        setup:
+        app.getUserName() >> "josh"
+
+        when:
+        centerLayoutController.initializeGithubService()
+
+        then:
+        1 * githubService.setController(centerLayoutController)
+        1 * githubService.setApp(app)
+        1 * githubService.start()
+    }
 }

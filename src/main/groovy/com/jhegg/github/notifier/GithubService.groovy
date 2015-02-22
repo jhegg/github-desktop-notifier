@@ -9,13 +9,14 @@ import javafx.concurrent.Task
 class GithubService extends Service<String> {
     CenterLayoutController layoutController
     App app
+    def github = new HTTPBuilder()
 
     @Override
     protected Task<String> createTask() {
         return new Task<String>() {
             @Override
             protected String call() throws Exception {
-                def github = new HTTPBuilder(resolvedUrl)
+                github.setUri(resolvedUrl)
                 github.get(headers: getHeaders(), contentType: 'text/plain') { response, reader ->
                     assert response.status == 200
                     return reader.text

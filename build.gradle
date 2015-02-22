@@ -1,6 +1,8 @@
 apply plugin: 'groovy'
 apply plugin: 'application'
 apply from: 'javafx.plugin'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
 
 repositories {
     mavenCentral()
@@ -27,5 +29,23 @@ test {
     testLogging {
         showStackTraces = true
         events "passed", "skipped", "failed"
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
     }
 }

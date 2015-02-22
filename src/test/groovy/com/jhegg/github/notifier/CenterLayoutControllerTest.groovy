@@ -16,11 +16,15 @@ class CenterLayoutControllerTest extends Specification {
     def observableList = Mock(ObservableList)
     def listView = Mock(ListView)
     def selectionModel = Mock(MultipleSelectionModel)
+    def githubService = Mock(GithubService)
+    def app = Mock(App)
 
     def setup() {
         listView.selectionModel = selectionModel
         centerLayoutController.observableList = observableList
         centerLayoutController.listView = listView
+        centerLayoutController.githubService = githubService
+        centerLayoutController.app = app
     }
 
     def "updateEvents with empty list"() {
@@ -51,5 +55,27 @@ class CenterLayoutControllerTest extends Specification {
 
         then:
         centerLayoutController.textArea.getText() == "error message"
+    }
+
+    def "refreshDisplay without username"() {
+        setup:
+        app.getUserName() >> GString.EMPTY
+
+        when:
+        centerLayoutController.refreshDisplay()
+
+        then:
+        0 * githubService.restart()
+    }
+
+    def "refreshDisplay with username"() {
+        setup:
+        app.getUserName() >> "josh"
+
+        when:
+        centerLayoutController.refreshDisplay()
+
+        then:
+        1 * githubService.restart()
     }
 }

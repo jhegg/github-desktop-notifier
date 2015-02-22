@@ -8,6 +8,7 @@ import javafx.concurrent.Task
 
 class GithubService extends Service<String> {
     CenterLayoutController layoutController
+    App app
 
     @Override
     protected Task<String> createTask() {
@@ -43,19 +44,19 @@ class GithubService extends Service<String> {
     }
 
     String getResolvedUrl() {
-        if (App.githubEnterpriseHostname) {
+        if (app.githubEnterpriseHostname) {
             getResolvedGithubEnterprisePrefix() + getResolvedUrlSuffix()
         } else {
-            App.githubUrlPrefix + getResolvedUrlSuffix()
+            app.githubUrlPrefix + getResolvedUrlSuffix()
         }
     }
 
     private String getResolvedGithubEnterprisePrefix() {
-        String.format(App.githubEnterpriseUrlPrefixWithPlaceholder, App.githubEnterpriseHostname)
+        String.format(app.githubEnterpriseUrlPrefixWithPlaceholder, app.githubEnterpriseHostname)
     }
 
     private String getResolvedUrlSuffix() {
-        String.format(App.githubUrlSuffixWithPlaceholder, App.userName)
+        String.format(app.githubUrlSuffixWithPlaceholder, app.userName)
     }
 
     void setController(CenterLayoutController controller) {
@@ -67,8 +68,8 @@ class GithubService extends Service<String> {
                 'User-Agent': 'Apache HTTPClient',
                 'Accept'    : 'application/vnd.github.v3+json',
         ]
-        if (App.token) {
-            headers << ['Authorization': "token $App.token"]
+        if (app.token) {
+            headers << ['Authorization': "token $app.token"]
         }
         return headers
     }

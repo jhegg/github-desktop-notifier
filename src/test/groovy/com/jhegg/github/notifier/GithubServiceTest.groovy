@@ -1,16 +1,40 @@
 package com.jhegg.github.notifier
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class GithubServiceTest extends Specification {
     GithubService service = new GithubService()
     def layoutController = Mock(CenterLayoutController)
+    def app = Mock(App)
 
     def setup() {
         service.layoutController = layoutController
+        service.app = app
+    }
+
+    @Unroll
+    def "getResolvedUrl stuff"() {
+        setup:
+        app.getUserName() >> user
+        app.getGithubEnterpriseHostname() >> enterpriseHost
+
+        expect:
+        service.getResolvedUrl() == result
+
+        where:
+        user   | enterpriseHost       || result
+        "josh" | null                 || "https://api.github.com/users/josh/received_events"
+        "me"   | null                 || "https://api.github.com/users/me/received_events"
+        "josh" | "example.com"        || "https://example.com/api/v3/users/josh/received_events"
+        "you"  | "github.example.com" || "https://github.example.com/api/v3/users/you/received_events"
     }
 
     def "failure handler sets error message"() {
+        setup:
+        app.getGithubUrlSuffixWithPlaceholder() >> "https://www.example.com"
+        app.getUserName() >> "josh"
+
         when:
         service.failed()
 

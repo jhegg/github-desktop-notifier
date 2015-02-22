@@ -13,8 +13,8 @@ class EditPreferencesController {
     @FXML
     private TextField userName
 
+    App app
     Stage dialogStage
-
     boolean wasOkClicked
 
     @SuppressWarnings("GroovyUnusedDeclaration")
@@ -39,8 +39,8 @@ class EditPreferencesController {
 
     @FXML
     void clickedOk() {
-        App.userName = userName.getText()
-        App.token = token.getText()
+        app.userName = userName.getText()
+        app.token = token.getText()
         wasOkClicked = true
         dialogStage.close()
     }

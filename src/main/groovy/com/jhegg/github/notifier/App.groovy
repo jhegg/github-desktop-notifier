@@ -9,18 +9,27 @@ import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
 class App extends Application {
-    static String githubUrlPrefix = "https://api.github.com/"
-    static String githubEnterpriseUrlPrefixWithPlaceholder = "https://%s/api/v3/"
-    static String githubEnterpriseHostname = GString.EMPTY
-    static String githubUrlSuffixWithPlaceholder = "users/%s/received_events"
-    static String userName = GString.EMPTY
-    static String token = GString.EMPTY
+    static final String githubUrlPrefix = "https://api.github.com/"
+    static final String githubEnterpriseUrlPrefixWithPlaceholder = "https://%s/api/v3/"
+    String githubEnterpriseHostname = GString.EMPTY
+    static final String githubUrlSuffixWithPlaceholder = "users/%s/received_events"
+    String userName = GString.EMPTY
+    String token = GString.EMPTY
 
     protected Stage primaryStage
     protected CenterLayoutController centerLayoutController
     protected RootLayoutController rootLayoutController
 
     static void main(String[] args) {
+        launch(App.class, args)
+    }
+
+    void exitApp() {
+        Platform.exit()
+    }
+
+    @Override
+    void start(Stage primaryStage) throws Exception {
         def cli = new CliBuilder()
         cli.with {
             h longOpt: 'help', 'Show usage information'
@@ -28,7 +37,7 @@ class App extends Application {
             u longOpt: 'user', args: 1, 'GitHub username to be queried (Required)'
             n longOpt: 'hostname', args: 1, 'GitHub Enterprise hostname (Optional)'
         }
-        def options = cli.parse(args)
+        def options = cli.parse(getParameters().raw)
         if (options.h) {
             cli.usage()
             return
@@ -43,15 +52,6 @@ class App extends Application {
             githubEnterpriseHostname = options.n
         }
 
-        launch(App.class, args)
-    }
-
-    void exitApp() {
-        Platform.exit()
-    }
-
-    @Override
-    void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage
         primaryStage.title = "GitHub Events using Groovy"
         primaryStage.scene = getScene()
@@ -83,6 +83,7 @@ class App extends Application {
         Pane pane = loader.load()
         centerLayoutController = loader.getController()
         centerLayoutController.setApp(this)
+        centerLayoutController.initializeGithubService()
         return pane
     }
 }

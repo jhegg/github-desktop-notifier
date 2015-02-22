@@ -18,7 +18,7 @@ class CenterLayoutController {
 
     App app
 
-    private GithubService githubService
+    GithubService githubService
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
@@ -28,11 +28,14 @@ class CenterLayoutController {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 {observableValue, oldValue, newValue ->
                     displayTextArea(newValue)} as ChangeListener)
+    }
 
+    public void initializeGithubService() {
         githubService = new GithubService()
         githubService.setController(this)
+        githubService.setApp(app)
 
-        if (App.userName) {
+        if (app.userName) {
             githubService.start()
         } else {
             textArea.setText("Please click on Edit->Preferences and set a GitHub User Name.")
@@ -52,8 +55,9 @@ class CenterLayoutController {
     }
 
     void refreshDisplay() {
-        if (App.userName)
+        if (app.userName) {
             githubService.restart() // todo This is not an ideal usage for proper error handling
+        }
     }
 
     void displayError(String errorMessage) {

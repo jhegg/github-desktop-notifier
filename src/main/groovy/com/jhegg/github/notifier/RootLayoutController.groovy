@@ -24,6 +24,7 @@ class RootLayoutController {
         Stage dialogStage = buildDialogStage(pane)
         EditPreferencesController controller = loader.getController()
         controller.dialogStage = dialogStage
+        controller.app = app
         controller.setDisplayedPreferences(app.token, app.userName)
         dialogStage.showAndWait()
 

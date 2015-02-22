@@ -22,3 +22,10 @@ mainClassName = 'com.jhegg.github.notifier.App'
 javafx {
     mainClass = mainClassName
 }
+
+test {
+    testLogging {
+        showStackTraces = true
+        events "passed", "skipped", "failed"
+    }
+}

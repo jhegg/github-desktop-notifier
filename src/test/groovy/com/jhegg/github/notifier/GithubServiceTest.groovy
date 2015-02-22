@@ -14,7 +14,7 @@ class GithubServiceTest extends Specification {
     }
 
     @Unroll
-    def "getResolvedUrl stuff"() {
+    def "getResolvedUrl with user '#user' and enterpriseHost '#enterpriseHost'"() {
         setup:
         app.getUserName() >> user
         app.getGithubEnterpriseHostname() >> enterpriseHost
@@ -28,6 +28,23 @@ class GithubServiceTest extends Specification {
         "me"   | null                 || "https://api.github.com/users/me/received_events"
         "josh" | "example.com"        || "https://example.com/api/v3/users/josh/received_events"
         "you"  | "github.example.com" || "https://github.example.com/api/v3/users/you/received_events"
+    }
+
+    @Unroll
+    def "getHeaders with token '#token'"() {
+        setup:
+        app.getToken() >> token
+
+        expect:
+        service.getHeaders() == result
+
+        where:
+        token | result
+        null | ['User-Agent': 'Apache HTTPClient',
+                'Accept'    : 'application/vnd.github.v3+json',]
+        "1234" | ['User-Agent': 'Apache HTTPClient',
+                  'Accept'    : 'application/vnd.github.v3+json',
+                  'Authorization' : "token 1234"]
     }
 
     def "failure handler sets error message"() {

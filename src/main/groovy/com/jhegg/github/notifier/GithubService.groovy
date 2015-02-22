@@ -63,7 +63,7 @@ class GithubService extends Service<String> {
         this.layoutController = controller
     }
 
-    private def getHeaders() {
+    def getHeaders() {
         def headers = [
                 'User-Agent': 'Apache HTTPClient',
                 'Accept'    : 'application/vnd.github.v3+json',

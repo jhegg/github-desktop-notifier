@@ -9,7 +9,7 @@ import javafx.scene.control.TextArea
 
 class CenterLayoutController {
     @FXML
-    private ListView<GithubEvent> listView
+    ListView<GithubEvent> listView
 
     @FXML
     TextArea textArea;
@@ -46,7 +46,9 @@ class CenterLayoutController {
 
     void updateEvents(List<GithubEvent> githubEvents) {
         observableList.setAll(githubEvents)
-        listView.selectionModel.selectFirst()
+        if (!githubEvents.isEmpty()) {
+            listView.selectionModel.selectFirst()
+        }
     }
 
     void refreshDisplay() {

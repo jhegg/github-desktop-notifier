@@ -30,6 +30,17 @@ class App extends Application {
 
     @Override
     void start(Stage primaryStage) throws Exception {
+        def options = parseArguments(getParameters().raw)
+        if (options.h) {
+            stop()
+            return
+        }
+
+        this.primaryStage = primaryStage
+        configurePrimaryStage()
+    }
+
+    def parseArguments(List<String> arguments) {
         def cli = new CliBuilder()
         cli.with {
             h longOpt: 'help', 'Show usage information'
@@ -37,10 +48,9 @@ class App extends Application {
             u longOpt: 'user', args: 1, 'GitHub username to be queried (Required)'
             n longOpt: 'hostname', args: 1, 'GitHub Enterprise hostname (Optional)'
         }
-        def options = cli.parse(getParameters().raw)
+        def options = cli.parse(arguments)
         if (options.h) {
             cli.usage()
-            return
         }
         if (options.t) {
             token = options.t
@@ -51,17 +61,19 @@ class App extends Application {
         if (options.n) {
             githubEnterpriseHostname = options.n
         }
-
-        this.primaryStage = primaryStage
-        primaryStage.title = "GitHub Events using Groovy"
-        primaryStage.scene = getScene()
-        primaryStage.show()
+        return options
     }
 
     @Override
     void stop() throws Exception {
         super.stop()
         exitApp()
+    }
+
+    private void configurePrimaryStage() {
+        primaryStage.title = "GitHub Events using Groovy"
+        primaryStage.scene = getScene()
+        primaryStage.show()
     }
 
     private def getScene() {

@@ -74,6 +74,10 @@ class App extends Application {
         primaryStage.title = "GitHub Events using Groovy"
         primaryStage.scene = getScene()
         primaryStage.show()
+
+        // prevent users from resizing the window so small that the status bar disappears
+        primaryStage.setMinWidth(700)
+        primaryStage.setMinHeight(520)
     }
 
     private def getScene() {

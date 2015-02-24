@@ -16,14 +16,14 @@ class CenterLayoutControllerTest extends Specification {
     def observableList = Mock(ObservableList)
     def listView = Mock(ListView)
     def selectionModel = Mock(MultipleSelectionModel)
-    def githubService = Mock(GithubService)
+    def gitHubService = Mock(GitHubService)
     def app = Mock(App)
 
     def setup() {
         listView.selectionModel = selectionModel
         centerLayoutController.observableList = observableList
         centerLayoutController.listView = listView
-        centerLayoutController.githubService = githubService
+        centerLayoutController.gitHubService = gitHubService
         centerLayoutController.app = app
     }
 
@@ -65,7 +65,7 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.refreshDisplay()
 
         then:
-        0 * githubService.restart()
+        0 * gitHubService.restart()
     }
 
     def "refreshDisplay with username"() {
@@ -76,7 +76,7 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.refreshDisplay()
 
         then:
-        1 * githubService.restart()
+        1 * gitHubService.restart()
     }
 
     def "initializeGithubService without userName"() {
@@ -88,9 +88,9 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.initializeGithubService()
 
         then:
-        1 * githubService.setController(centerLayoutController)
-        1 * githubService.setApp(app)
-        0 * githubService.start()
+        1 * gitHubService.setController(centerLayoutController)
+        1 * gitHubService.setApp(app)
+        0 * gitHubService.start()
         !centerLayoutController.textArea.getText().isEmpty()
     }
 
@@ -102,18 +102,18 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.initializeGithubService()
 
         then:
-        1 * githubService.setController(centerLayoutController)
-        1 * githubService.setApp(app)
-        1 * githubService.start()
+        1 * gitHubService.setController(centerLayoutController)
+        1 * gitHubService.setApp(app)
+        1 * gitHubService.start()
     }
 
     def "displayTextArea with an event that has json"() {
         setup:
-        def githubEvent = new GithubEvent(id: "123", json: "{\"id\": \"123\"}")
+        def gitHubEvent = new GithubEvent(id: "123", json: "{\"id\": \"123\"}")
         centerLayoutController.textArea = new TextArea()
 
         when:
-        centerLayoutController.displayTextArea(githubEvent)
+        centerLayoutController.displayTextArea(gitHubEvent)
 
         then:
         centerLayoutController.textArea.getText() == "{\n    \"id\": \"123\"\n}"

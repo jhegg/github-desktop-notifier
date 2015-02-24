@@ -17,7 +17,7 @@ class AppTest extends Specification {
         then:
         app.token == expected.token
         app.userName == expected.userName
-        app.githubEnterpriseHostname == expected.hostname
+        app.gitHubEnterpriseHostname == expected.hostname
 
         where:
         arguments || expected

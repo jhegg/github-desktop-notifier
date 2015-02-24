@@ -18,7 +18,7 @@ class CenterLayoutController {
 
     App app
 
-    GithubService githubService = new GithubService()
+    GitHubService gitHubService = new GitHubService()
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
@@ -31,11 +31,11 @@ class CenterLayoutController {
     }
 
     public void initializeGithubService() {
-        githubService.setController(this)
-        githubService.setApp(app)
+        gitHubService.setController(this)
+        gitHubService.setApp(app)
 
         if (app.userName) {
-            githubService.start()
+            gitHubService.start()
         } else {
             textArea.setText("Please click on Edit->Preferences and set a GitHub User Name.")
         }
@@ -55,7 +55,7 @@ class CenterLayoutController {
 
     void refreshDisplay() {
         if (app.userName) {
-            githubService.restart() // todo This is not an ideal usage for proper error handling
+            gitHubService.restart() // todo This is not an ideal usage for proper error handling
         }
     }
 

@@ -4,31 +4,14 @@ import groovyx.net.http.HTTPBuilder
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class GithubServiceTest extends Specification {
-    GithubService service = new GithubService()
+class GitHubServiceTest extends Specification {
+    GitHubService service = new GitHubService()
     def layoutController = Mock(CenterLayoutController)
     def app = Mock(App)
 
     def setup() {
         service.layoutController = layoutController
         service.app = app
-    }
-
-    @Unroll
-    def "getResolvedUrl with user '#user' and enterpriseHost '#enterpriseHost'"() {
-        setup:
-        app.getUserName() >> user
-        app.getGithubEnterpriseHostname() >> enterpriseHost
-
-        expect:
-        service.getResolvedUrl() == result
-
-        where:
-        user   | enterpriseHost       || result
-        "josh" | null                 || "https://api.github.com/users/josh/received_events"
-        "me"   | null                 || "https://api.github.com/users/me/received_events"
-        "josh" | "example.com"        || "https://example.com/api/v3/users/josh/received_events"
-        "you"  | "github.example.com" || "https://github.example.com/api/v3/users/you/received_events"
     }
 
     @Unroll
@@ -50,7 +33,7 @@ class GithubServiceTest extends Specification {
 
     def "failure handler sets error message"() {
         setup:
-        app.getGithubUrlSuffixWithPlaceholder() >> "https://www.example.com"
+        app.getGitHubUrlSuffixWithPlaceholder() >> "https://www.example.com"
         app.getUserName() >> "josh"
 
         when:
@@ -87,14 +70,14 @@ class GithubServiceTest extends Specification {
 
     def "service creation"() {
         setup:
-        service.github = Mock(HTTPBuilder)
+        service.gitHub = Mock(HTTPBuilder)
 
         when:
         service.createTask().call()
 
         then:
-        1 * service.github.setUri(_)
-        1 * service.github.get(*_)
+        1 * service.gitHub.setUri(_)
+        1 * service.gitHub.get(*_)
     }
 
     def "setController"() {

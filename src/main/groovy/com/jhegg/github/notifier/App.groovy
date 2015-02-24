@@ -9,10 +9,10 @@ import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
 class App extends Application {
-    static final String githubUrlPrefix = "https://api.github.com/"
-    static final String githubEnterpriseUrlPrefixWithPlaceholder = "https://%s/api/v3/"
-    String githubEnterpriseHostname = GString.EMPTY
-    static final String githubUrlSuffixWithPlaceholder = "users/%s/received_events"
+    static final String gitHubUrlPrefix = "https://api.github.com/"
+    static final String gitHubEnterpriseUrlPrefixWithPlaceholder = "https://%s/api/v3/"
+    String gitHubEnterpriseHostname = GString.EMPTY
+    static final String gitHubUrlSuffixWithPlaceholder = "users/%s/received_events"
     String userName = GString.EMPTY
     String token = GString.EMPTY
 
@@ -59,7 +59,7 @@ class App extends Application {
             userName = options.u
         }
         if (options.n) {
-            githubEnterpriseHostname = options.n
+            gitHubEnterpriseHostname = options.n
         }
         return options
     }
@@ -91,6 +91,7 @@ class App extends Application {
         BorderPane pane = loader.load()
         rootLayoutController = loader.getController()
         rootLayoutController.setApp(this)
+        rootLayoutController.updateGitHubAddress()
         return pane
     }
 

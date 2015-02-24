@@ -6,18 +6,18 @@ import groovyx.net.http.HTTPBuilder
 import javafx.concurrent.Service
 import javafx.concurrent.Task
 
-class GithubService extends Service<String> {
+class GitHubService extends Service<String> {
     CenterLayoutController layoutController
     App app
-    def github = new HTTPBuilder()
+    def gitHub = new HTTPBuilder()
 
     @Override
     protected Task<String> createTask() {
         return new Task<String>() {
             @Override
             protected String call() throws Exception {
-                github.setUri(resolvedUrl)
-                github.get(headers: getHeaders(), contentType: 'text/plain') { response, reader ->
+                gitHub.setUri(GitHubAddress.getResolvedUrl(app))
+                gitHub.get(headers: getHeaders(), contentType: 'text/plain') { response, reader ->
                     assert response.status == 200
                     return reader.text
                 }
@@ -41,23 +41,7 @@ class GithubService extends Service<String> {
     @Override
     protected void failed() {
         super.failed()
-        layoutController.displayError("Failed retrieving results from ${getResolvedUrl()} due to:\n ${getException()}")
-    }
-
-    String getResolvedUrl() {
-        if (app.githubEnterpriseHostname) {
-            getResolvedGithubEnterprisePrefix() + getResolvedUrlSuffix()
-        } else {
-            app.githubUrlPrefix + getResolvedUrlSuffix()
-        }
-    }
-
-    private String getResolvedGithubEnterprisePrefix() {
-        String.format(app.githubEnterpriseUrlPrefixWithPlaceholder, app.githubEnterpriseHostname)
-    }
-
-    private String getResolvedUrlSuffix() {
-        String.format(app.githubUrlSuffixWithPlaceholder, app.userName)
+        layoutController.displayError("Failed retrieving results from ${GitHubAddress.getResolvedUrl(app)} due to:\n ${getException()}")
     }
 
     void setController(CenterLayoutController controller) {

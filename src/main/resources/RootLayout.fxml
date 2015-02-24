@@ -28,14 +28,14 @@
       </MenuBar>
    </top>
    <bottom>
-      <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="1024.0" style="-fx-background-color: DarkGray;" BorderPane.alignment="CENTER">
+      <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="28.0" prefWidth="1024.0" style="-fx-background-color: linear-gradient(to bottom, derive(-fx-color,50%), derive(-fx-color,-30%)), -fx-body-color;" BorderPane.alignment="CENTER">
          <children>
             <Label text="URL:">
                <HBox.margin>
-                  <Insets left="5.0" top="5.0" />
+                  <Insets left="10.0" top="5.0" />
                </HBox.margin>
             </Label>
-            <Label maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Label">
+            <Label fx:id="address" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0">
                <HBox.margin>
                   <Insets left="5.0" top="5.0" />
                </HBox.margin>

@@ -4,6 +4,7 @@ import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.control.Alert
+import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 import javafx.stage.Modality
 import javafx.stage.Stage
@@ -11,6 +12,9 @@ import javafx.stage.StageStyle
 
 class RootLayoutController {
     App app
+
+    @FXML
+    Label address
 
     @FXML
     void exit() {
@@ -30,7 +34,12 @@ class RootLayoutController {
 
         if (controller.wasOkClicked) {
             app.centerLayoutController.refreshDisplay()
+            updateGitHubAddress()
         }
+    }
+
+    void updateGitHubAddress() {
+        address.setText(GitHubAddress.getResolvedUrl(app))
     }
 
     private Stage buildDialogStage(Pane pane) {

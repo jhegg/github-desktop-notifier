@@ -90,8 +90,7 @@ class App extends Application {
         def loader = new FXMLLoader(getClass().getClassLoader().getResource('RootLayout.fxml') as URL)
         BorderPane pane = loader.load()
         rootLayoutController = loader.getController()
-        rootLayoutController.setApp(this)
-        rootLayoutController.updateGitHubAddress()
+        rootLayoutController.configure(this)
         return pane
     }
 

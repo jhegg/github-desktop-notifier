@@ -19,7 +19,7 @@ class EditPreferencesController {
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
-    private void initialize() {
+    void initialize() {
         pressingEnterKeyClicksOk()
     }
 
@@ -42,12 +42,13 @@ class EditPreferencesController {
         app.userName = userName.getText()
         app.token = token.getText()
         wasOkClicked = true
-        editPreferencesView.dialogStage.close()
+        editPreferencesView.closeDialog()
     }
 
     @FXML
     void clickedCancel() {
-        editPreferencesView.dialogStage.close()
+        wasOkClicked = false
+        editPreferencesView.closeDialog()
     }
 
     void setDisplayedPreferences(String token, String userName) {

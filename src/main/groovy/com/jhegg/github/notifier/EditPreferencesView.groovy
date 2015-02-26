@@ -39,6 +39,11 @@ class EditPreferencesView {
     }
 
     void showDialog() {
+        controller.setDisplayedPreferences(app.token, app.userName)
         dialogStage.showAndWait()
+    }
+
+    void closeDialog() {
+        dialogStage.close()
     }
 }

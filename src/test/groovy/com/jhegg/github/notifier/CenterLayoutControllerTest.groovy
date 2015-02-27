@@ -28,23 +28,20 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.app = app
     }
 
-    def "updateEvents with empty list"() {
+    @Unroll
+    def "updateEvents with list: #list"() {
         when:
-        centerLayoutController.updateEvents([] as List<GithubEvent>)
+        centerLayoutController.updateEvents(events as List<GithubEvent>)
 
         then:
-        1 * observableList.setAll({it.isEmpty()})
-        0 * selectionModel.selectFirst()
-    }
+        1 * observableList.setAll({it.size() == resultSize})
+        timesSelected * selectionModel.selectFirst()
 
-    def "updateEvents with single event in list"() {
-        when:
-        def events = [new GithubEvent(id: "1")] as List<GithubEvent>
-        centerLayoutController.updateEvents(events)
-
-        then:
-        1 * observableList.setAll({it.size() == 1})
-        1 * selectionModel.selectFirst()
+        where:
+        events || resultSize | timesSelected
+        [] || 0 | 0
+        [new GithubEvent(id: "1")] || 1 | 1
+        [new GithubEvent(id: "1"), new GithubEvent(id: "2")] || 2 | 1
     }
 
     def "displayError"() {

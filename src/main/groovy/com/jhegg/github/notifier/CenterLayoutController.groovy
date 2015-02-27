@@ -49,7 +49,7 @@ class CenterLayoutController {
     void updateEvents(List<GithubEvent> githubEvents) {
         observableList.setAll(githubEvents)
         if (!githubEvents.isEmpty()) {
-            listView.selectionModel.selectFirst()
+            listView.getSelectionModel().selectFirst()
         }
     }
 

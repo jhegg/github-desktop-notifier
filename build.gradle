@@ -17,6 +17,10 @@ dependencies {
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testRuntime 'cglib:cglib-nodep:3.1'
+
+    testCompile 'org.powermock:powermock-module-junit4:1.5.4'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.5.4'
+    testCompile 'org.powermock:powermock-classloading-xstream:1.5.4'
 }
 
 mainClassName = 'com.jhegg.github.notifier.App'

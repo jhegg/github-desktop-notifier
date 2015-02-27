@@ -6,6 +6,7 @@ import javafx.scene.control.ListView
 import javafx.scene.control.MultipleSelectionModel
 import javafx.scene.control.TextArea
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class CenterLayoutControllerTest extends Specification {
     static {
@@ -14,7 +15,7 @@ class CenterLayoutControllerTest extends Specification {
 
     CenterLayoutController centerLayoutController = new CenterLayoutController()
     def observableList = Mock(ObservableList)
-    def listView = Mock(ListView)
+    def listView = new ListView<GithubEvent>()
     def selectionModel = Mock(MultipleSelectionModel)
     def gitHubService = Mock(GitHubService)
     def app = Mock(App)
@@ -57,31 +58,27 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.textArea.getText() == "error message"
     }
 
-    def "refreshDisplay without username"() {
+    @Unroll
+    def "refreshDisplay with username: '#userName'"() {
         setup:
-        app.getUserName() >> GString.EMPTY
+        app.getUserName() >> userName
 
         when:
         centerLayoutController.refreshDisplay()
 
         then:
-        0 * gitHubService.restart()
+        times * gitHubService.restart()
+
+        where:
+        userName || times
+        GString.EMPTY || 0
+        "josh" || 1
     }
 
-    def "refreshDisplay with username"() {
+    @Unroll
+    def "initializeGithubService with username: '#userName'"() {
         setup:
-        app.getUserName() >> "josh"
-
-        when:
-        centerLayoutController.refreshDisplay()
-
-        then:
-        1 * gitHubService.restart()
-    }
-
-    def "initializeGithubService without userName"() {
-        setup:
-        app.getUserName() >> GString.EMPTY
+        app.getUserName() >> userName
         centerLayoutController.textArea = new TextArea()
 
         when:
@@ -90,21 +87,13 @@ class CenterLayoutControllerTest extends Specification {
         then:
         1 * gitHubService.setController(centerLayoutController)
         1 * gitHubService.setApp(app)
-        0 * gitHubService.start()
-        !centerLayoutController.textArea.getText().isEmpty()
-    }
+        times * gitHubService.start()
+        centerLayoutController.textArea.getText().isEmpty() == doesNotShowPlaceholderMessage
 
-    def "initializeGithubService with userName"() {
-        setup:
-        app.getUserName() >> "josh"
-
-        when:
-        centerLayoutController.initializeGithubService()
-
-        then:
-        1 * gitHubService.setController(centerLayoutController)
-        1 * gitHubService.setApp(app)
-        1 * gitHubService.start()
+        where:
+        userName || times | doesNotShowPlaceholderMessage
+        GString.EMPTY || 0 | false
+        "josh" || 1 | true
     }
 
     def "displayTextArea with an event that has json"() {

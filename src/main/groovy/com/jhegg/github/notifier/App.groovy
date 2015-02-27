@@ -72,25 +72,22 @@ class App extends Application {
 
     private void configurePrimaryStage() {
         primaryStage.title = "GitHub Events using Groovy"
-        primaryStage.scene = getScene()
+        buildScene()
+        configureControllers()
+        enforceMinimumWindowSize()
         primaryStage.show()
-
-        // prevent users from resizing the window so small that the status bar disappears
-        primaryStage.setMinWidth(700)
-        primaryStage.setMinHeight(520)
     }
 
-    private def getScene() {
+    private void buildScene() {
         def rootLayout = getRootLayout()
         rootLayout.setCenter(getCenterLayout())
-        new Scene(rootLayout)
+        primaryStage.scene = new Scene(rootLayout)
     }
 
     private BorderPane getRootLayout() {
         def loader = new FXMLLoader(getClass().getClassLoader().getResource('RootLayout.fxml') as URL)
         BorderPane pane = loader.load()
         rootLayoutController = loader.getController()
-        rootLayoutController.configure(this)
         return pane
     }
 
@@ -98,8 +95,19 @@ class App extends Application {
         def loader = new FXMLLoader(getClass().getClassLoader().getResource('CenterLayout.fxml') as URL)
         Pane pane = loader.load()
         centerLayoutController = loader.getController()
+        return pane
+    }
+
+    private void configureControllers() {
+        rootLayoutController.configure(this)
+
         centerLayoutController.setApp(this)
         centerLayoutController.initializeGithubService()
-        return pane
+    }
+
+    private void enforceMinimumWindowSize() {
+        // prevent users from resizing the window so small that the status bar disappears
+        primaryStage.setMinWidth(700)
+        primaryStage.setMinHeight(520)
     }
 }

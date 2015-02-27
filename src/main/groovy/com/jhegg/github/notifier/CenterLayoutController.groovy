@@ -9,12 +9,12 @@ import javafx.scene.control.TextArea
 
 class CenterLayoutController {
     @FXML
-    ListView<GithubEvent> listView
+    ListView<GitHubEvent> listView
 
     @FXML
     TextArea textArea;
 
-    def observableList = FXCollections.<GithubEvent>observableArrayList()
+    def observableList = FXCollections.<GitHubEvent>observableArrayList()
 
     App app
 
@@ -22,7 +22,7 @@ class CenterLayoutController {
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
-    private void initialize() {
+    void initialize() {
         listView.setItems(observableList)
         textArea.setEditable(false)
         listView.getSelectionModel().selectedItemProperty().addListener(
@@ -41,12 +41,12 @@ class CenterLayoutController {
         }
     }
 
-    void displayTextArea(GithubEvent event) {
+    void displayTextArea(GitHubEvent event) {
         if (event != null )
             textArea.setText(JsonOutput.prettyPrint(event.json))
     }
 
-    void updateEvents(List<GithubEvent> githubEvents) {
+    void updateEvents(List<GitHubEvent> githubEvents) {
         observableList.setAll(githubEvents)
         if (!githubEvents.isEmpty()) {
             listView.getSelectionModel().selectFirst()

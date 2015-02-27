@@ -15,7 +15,7 @@ class CenterLayoutControllerTest extends Specification {
 
     CenterLayoutController centerLayoutController = new CenterLayoutController()
     def observableList = Mock(ObservableList)
-    def listView = new ListView<GithubEvent>()
+    def listView = new ListView<GitHubEvent>()
     def selectionModel = Mock(MultipleSelectionModel)
     def gitHubService = Mock(GitHubService)
     def app = Mock(App)
@@ -31,7 +31,7 @@ class CenterLayoutControllerTest extends Specification {
     @Unroll
     def "updateEvents with list: #list"() {
         when:
-        centerLayoutController.updateEvents(events as List<GithubEvent>)
+        centerLayoutController.updateEvents(events as List<GitHubEvent>)
 
         then:
         1 * observableList.setAll({it.size() == resultSize})
@@ -40,8 +40,8 @@ class CenterLayoutControllerTest extends Specification {
         where:
         events || resultSize | timesSelected
         [] || 0 | 0
-        [new GithubEvent(id: "1")] || 1 | 1
-        [new GithubEvent(id: "1"), new GithubEvent(id: "2")] || 2 | 1
+        [new GitHubEvent(id: "1")] || 1 | 1
+        [new GitHubEvent(id: "1"), new GitHubEvent(id: "2")] || 2 | 1
     }
 
     def "displayError"() {
@@ -93,15 +93,33 @@ class CenterLayoutControllerTest extends Specification {
         "josh" || 1 | true
     }
 
-    def "displayTextArea with an event that has json"() {
+    @Unroll
+    def "displayTextArea with event: #event"() {
         setup:
-        def gitHubEvent = new GithubEvent(id: "123", json: "{\"id\": \"123\"}")
         centerLayoutController.textArea = new TextArea()
 
         when:
-        centerLayoutController.displayTextArea(gitHubEvent)
+        centerLayoutController.displayTextArea(event)
 
         then:
-        centerLayoutController.textArea.getText() == "{\n    \"id\": \"123\"\n}"
+        centerLayoutController.textArea.getText() == result
+
+        where:
+        event || result
+        null || GString.EMPTY
+        new GitHubEvent(id: "123", login: "josh", created_at: "now", json: "{\"id\": \"123\"}") || "{\n    \"id\": \"123\"\n}"
+    }
+
+    def "initialize"() {
+        setup:
+        centerLayoutController.listView = new ListView<GitHubEvent>()
+        centerLayoutController.textArea = new TextArea()
+
+        when:
+        centerLayoutController.initialize()
+
+        then:
+        listView.getItems() == observableList
+        !centerLayoutController.textArea.isEditable()
     }
 }

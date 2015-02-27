@@ -1,6 +1,6 @@
 package com.jhegg.github.notifier
 
-class GithubEvent {
+class GitHubEvent {
     String id
     String type
     String login

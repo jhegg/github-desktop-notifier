@@ -58,7 +58,7 @@ class GitHubServiceTest extends Specification {
         service.succeeded()
 
         then:
-        1 * layoutController.updateEvents({ List<GithubEvent> events ->
+        1 * layoutController.updateEvents({ List<GitHubEvent> events ->
             events.size() == 1
             events[0].id == "2671420212"
             events[0].type == "PushEvent"

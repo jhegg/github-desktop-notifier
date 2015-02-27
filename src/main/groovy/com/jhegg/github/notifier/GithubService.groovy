@@ -32,7 +32,7 @@ class GitHubService extends Service<String> {
         def result = new JsonSlurper().parseText(value)
         def events = result.collect {
             // todo determine which events we care about, and then build in support for parsing them
-            new GithubEvent(id: it.id, type: it.type, login: it.actor.login, created_at: it.created_at, json: JsonOutput.toJson(it))
+            new GitHubEvent(id: it.id, type: it.type, login: it.actor.login, created_at: it.created_at, json: JsonOutput.toJson(it))
         }
 
         layoutController.updateEvents(events)

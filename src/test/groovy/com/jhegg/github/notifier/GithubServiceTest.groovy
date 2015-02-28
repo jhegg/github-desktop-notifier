@@ -6,7 +6,6 @@ import spock.lang.Unroll
 
 class GitHubServiceTest extends Specification {
     GitHubService service = new GitHubService()
-    def layoutController = Mock(CenterLayoutController)
     def app = Mock(App)
 
     def setup() {

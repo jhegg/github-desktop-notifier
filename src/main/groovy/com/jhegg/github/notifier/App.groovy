@@ -71,7 +71,7 @@ class App extends Application {
     }
 
     private void configurePrimaryStage() {
-        primaryStage.title = "GitHub Events using Groovy"
+        primaryStage.title = "GitHub Desktop Notifier"
         buildScene()
         configureControllers()
         enforceMinimumWindowSize()

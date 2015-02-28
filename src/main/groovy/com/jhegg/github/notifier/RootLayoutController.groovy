@@ -1,10 +1,14 @@
 package com.jhegg.github.notifier
 
+import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert
+import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
 import javafx.scene.layout.Pane
+import javafx.scene.text.Text
+import javafx.scene.text.TextFlow
 import javafx.stage.StageStyle
 
 class RootLayoutController {
@@ -21,7 +25,11 @@ class RootLayoutController {
         aboutBox = new Alert(Alert.AlertType.INFORMATION)
         aboutBox.setTitle("About")
         aboutBox.setHeaderText(null)
-        aboutBox.setContentText("This example app illustrates using Groovy and JavaFX to interact with the GitHub API.")
+        def hyperlink = new Hyperlink("GitHub Desktop Notifier")
+        hyperlink.setOnAction { ActionEvent event ->
+            app.getHostServices().showDocument('https://github.com/jhegg/github-desktop-notifier/')
+        }
+        aboutBox.getDialogPane().setContent(new TextFlow(hyperlink, new Text(" by Josh Hegg")))
         aboutBox.initStyle(StageStyle.UTILITY)
     }
 

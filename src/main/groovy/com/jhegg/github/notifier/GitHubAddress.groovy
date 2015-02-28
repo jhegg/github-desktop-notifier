@@ -1,7 +1,13 @@
 package com.jhegg.github.notifier
 
 class GitHubAddress {
+    private static final String overrideUrl = System.getProperty("gn.override.url")
+
     static String getResolvedUrl(App app) {
+        if (overrideUrl) {
+            return overrideUrl
+        }
+
         if (app.gitHubEnterpriseHostname) {
             getResolvedGitHubEnterprisePrefix(app) + getResolvedUrlSuffix(app)
         } else {

@@ -1,15 +1,20 @@
 package com.jhegg.github.notifier
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import groovyx.net.http.HTTPBuilder
-import javafx.concurrent.Service
+import javafx.concurrent.ScheduledService
 import javafx.concurrent.Task
+import javafx.util.Duration
 
-class GitHubService extends Service<String> {
-    CenterLayoutController layoutController
+class GitHubService extends ScheduledService<String> {
     App app
     def gitHub = new HTTPBuilder()
+
+    GitHubService() {
+    }
+
+    GitHubService(Duration duration) {
+        this.setPeriod(duration)
+    }
 
     @Override
     protected Task<String> createTask() {
@@ -23,29 +28,6 @@ class GitHubService extends Service<String> {
                 }
             }
         }
-    }
-
-    @Override
-    protected void succeeded() {
-        super.succeeded()
-
-        def result = new JsonSlurper().parseText(value)
-        def events = result.collect {
-            // todo determine which events we care about, and then build in support for parsing them
-            new GitHubEvent(id: it.id, type: it.type, login: it.actor.login, created_at: it.created_at, json: JsonOutput.toJson(it))
-        }
-
-        layoutController.updateEvents(events)
-    }
-
-    @Override
-    protected void failed() {
-        super.failed()
-        layoutController.displayError("Failed retrieving results from ${GitHubAddress.getResolvedUrl(app)} due to:\n ${getException()}")
-    }
-
-    void setController(CenterLayoutController controller) {
-        this.layoutController = controller
     }
 
     def getHeaders() {

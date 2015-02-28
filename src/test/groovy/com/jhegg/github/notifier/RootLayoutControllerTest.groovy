@@ -31,4 +31,16 @@ class RootLayoutControllerTest extends Specification {
         false || ""
         true || "https://api.github.com/users/josh/received_events"
     }
+
+    def "exit invokes exitApp"() {
+        setup:
+        app = Mock(App)
+        rootLayoutController.app = app
+
+        when:
+        rootLayoutController.exit()
+
+        then:
+        1 * app.exitApp()
+    }
 }

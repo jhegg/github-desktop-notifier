@@ -41,4 +41,17 @@ class EditPreferencesControllerTest extends Specification {
         escapeKey | false | true  || [userName: '']
         spaceKey | false | false || [userName: '']
     }
+
+    def "setDisplayedPreferences updates fields"() {
+        setup:
+        controller.token = token
+        controller.userName = userName
+
+        when:
+        controller.setDisplayedPreferences("12345", "someUser")
+
+        then:
+        token.getText() == "12345"
+        userName.getText() == "someUser"
+    }
 }

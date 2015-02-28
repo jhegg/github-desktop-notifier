@@ -8,7 +8,6 @@ class RootLayoutControllerTest extends Specification {
     RootLayoutController rootLayoutController = new RootLayoutController()
     App app = new App()
     CenterLayoutController centerLayoutController = Mock(CenterLayoutController)
-    EditPreferencesView editPreferencesView = Mock(EditPreferencesView)
     EditPreferencesController editPreferencesController = Mock(EditPreferencesController)
 
     @Unroll
@@ -18,8 +17,7 @@ class RootLayoutControllerTest extends Specification {
         app.centerLayoutController = centerLayoutController
         rootLayoutController.app = app
         rootLayoutController.address = new Label()
-        rootLayoutController.editPreferencesView = editPreferencesView
-        editPreferencesView.controller >> editPreferencesController
+        rootLayoutController.editPreferencesController = editPreferencesController
         editPreferencesController.wasOkClicked >> wasOkClicked
 
         when:

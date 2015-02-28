@@ -2,9 +2,12 @@ package com.jhegg.github.notifier
 
 import javafx.event.EventHandler
 import javafx.fxml.FXML
+import javafx.scene.Scene
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.layout.Pane
+import javafx.stage.Modality
 import javafx.stage.Stage
 
 class EditPreferencesController {
@@ -14,7 +17,7 @@ class EditPreferencesController {
     private TextField userName
 
     App app
-    EditPreferencesView editPreferencesView
+    Stage dialogStage
     boolean wasOkClicked
 
     @SuppressWarnings("GroovyUnusedDeclaration")
@@ -42,17 +45,40 @@ class EditPreferencesController {
         app.userName = userName.getText()
         app.token = token.getText()
         wasOkClicked = true
-        editPreferencesView.closeDialog()
+        closeDialog()
     }
 
     @FXML
     void clickedCancel() {
         wasOkClicked = false
-        editPreferencesView.closeDialog()
+        closeDialog()
     }
 
     void setDisplayedPreferences(String token, String userName) {
         this.token.setText(token)
         this.userName.setText(userName)
+    }
+
+    void configure(App app, Pane pane) {
+        this.app = app
+        buildDialogStage(pane)
+        setDisplayedPreferences(app.token, app.userName)
+    }
+
+    private void buildDialogStage(Pane pane) {
+        dialogStage = new Stage()
+        dialogStage.setTitle("Edit Preferences")
+        dialogStage.initModality(Modality.WINDOW_MODAL)
+        dialogStage.initOwner(app.primaryStage)
+        dialogStage.setScene(new Scene(pane))
+    }
+
+    void showDialog() {
+        setDisplayedPreferences(app.token, app.userName)
+        dialogStage.showAndWait()
+    }
+
+    void closeDialog() {
+        dialogStage.close()
     }
 }

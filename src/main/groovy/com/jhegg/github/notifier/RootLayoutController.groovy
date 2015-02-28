@@ -1,13 +1,15 @@
 package com.jhegg.github.notifier
 
 import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert
 import javafx.scene.control.Label
+import javafx.scene.layout.Pane
 import javafx.stage.StageStyle
 
 class RootLayoutController {
     App app
-    EditPreferencesView editPreferencesView
+    EditPreferencesController editPreferencesController
     Alert aboutBox
 
     @FXML
@@ -30,9 +32,9 @@ class RootLayoutController {
 
     @FXML
     void editPreferences() {
-        editPreferencesView.showDialog()
+        editPreferencesController.showDialog()
 
-        if (editPreferencesView.controller.wasOkClicked) {
+        if (editPreferencesController.wasOkClicked) {
             app.centerLayoutController.refreshDisplay()
             updateGitHubAddress()
         }
@@ -49,8 +51,14 @@ class RootLayoutController {
 
     void configure(App app) {
         this.app = app
-        editPreferencesView = new EditPreferencesView(app)
-        editPreferencesView.configure()
         updateGitHubAddress()
+        buildEditPreferencesController()
+    }
+
+    void buildEditPreferencesController() {
+        def loader = new FXMLLoader(getClass().getClassLoader().getResource('EditPreferences.fxml') as URL)
+        Pane pane = loader.load()
+        editPreferencesController = loader.getController()
+        editPreferencesController.configure(app, pane)
     }
 }

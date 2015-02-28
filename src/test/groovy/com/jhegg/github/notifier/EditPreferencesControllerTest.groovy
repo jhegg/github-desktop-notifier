@@ -5,10 +5,10 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class EditPreferencesControllerTest extends Specification {
     EditPreferencesController controller = new EditPreferencesController()
-    EditPreferencesView view = Mock(EditPreferencesView)
     TextField token = new TextField()
     TextField userName = new TextField()
     @Shared KeyEvent enterKey = new KeyEvent(KeyEvent.KEY_PRESSED, "enter", "enter", KeyCode.ENTER, false, false, false, false)
@@ -16,14 +16,16 @@ class EditPreferencesControllerTest extends Specification {
     @Shared KeyEvent spaceKey = new KeyEvent(KeyEvent.KEY_PRESSED, "enter", "enter", KeyCode.SPACE, false, false, false, false)
     App app = new App()
 
-    def "key codes"() {
+    @Unroll
+    def "key codes with event: '#event.getCode()'"() {
         setup:
         controller.app = app
         userName.setText('josh')
         controller.token = token
         controller.userName = userName
-        controller.editPreferencesView = view
         controller.initialize()
+        controller.metaClass.wasCloseDialogCalled = false
+        controller.metaClass.closeDialog = { wasCloseDialogCalled = true }
 
         when:
         token.onKeyPressed.handle(event)
@@ -31,12 +33,12 @@ class EditPreferencesControllerTest extends Specification {
         then:
         app.userName == result.userName
         controller.wasOkClicked == wasOkClicked
-        times * view.closeDialog()
+        controller.wasCloseDialogCalled == closed
 
         where:
-        event | wasOkClicked | times || result
-        enterKey | true | 1 || [userName: 'josh']
-        escapeKey | false | 1  || [userName: '']
-        spaceKey | false | 0 || [userName: '']
+        event | wasOkClicked | closed || result
+        enterKey | true | true || [userName: 'josh']
+        escapeKey | false | true  || [userName: '']
+        spaceKey | false | false || [userName: '']
     }
 }

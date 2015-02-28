@@ -8,9 +8,20 @@ import javafx.stage.StageStyle
 class RootLayoutController {
     App app
     EditPreferencesView editPreferencesView
+    Alert aboutBox
 
     @FXML
     Label address
+
+    @SuppressWarnings("GroovyUnusedDeclaration")
+    @FXML
+    void initialize() {
+        aboutBox = new Alert(Alert.AlertType.INFORMATION)
+        aboutBox.setTitle("About")
+        aboutBox.setHeaderText(null)
+        aboutBox.setContentText("This example app illustrates using Groovy and JavaFX to interact with the GitHub API.")
+        aboutBox.initStyle(StageStyle.UTILITY)
+    }
 
     @FXML
     void exit() {
@@ -33,11 +44,6 @@ class RootLayoutController {
 
     @FXML
     void about() {
-        Alert aboutBox = new Alert(Alert.AlertType.INFORMATION)
-        aboutBox.setTitle("About")
-        aboutBox.setHeaderText(null)
-        aboutBox.setContentText("This example app illustrates using Groovy and JavaFX to interact with the GitHub API.")
-        aboutBox.initStyle(StageStyle.UTILITY)
         aboutBox.showAndWait()
     }
 

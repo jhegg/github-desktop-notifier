@@ -40,6 +40,16 @@
                   <Insets left="5.0" top="5.0" />
                </HBox.margin>
             </Label>
+            <Label text="Last fetched at:">
+               <HBox.margin>
+                  <Insets left="10.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="lastFetchTime" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0">
+               <HBox.margin>
+                  <Insets left="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
          </children>
       </HBox>
    </bottom>

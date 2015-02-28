@@ -136,6 +136,9 @@ class CenterLayoutControllerTest extends Specification {
     }
 
     def "success handler parses empty events"() {
+        setup:
+        centerLayoutController.rootLayoutController = Mock(RootLayoutController)
+
         when:
         centerLayoutController.onSuccess("{}")
 
@@ -144,6 +147,9 @@ class CenterLayoutControllerTest extends Specification {
     }
 
     def "success handler parses single push event"() {
+        setup:
+        centerLayoutController.rootLayoutController = Mock(RootLayoutController)
+
         when:
         centerLayoutController.onSuccess("[${getExampleSinglePushPayload()}]")
 

@@ -21,6 +21,8 @@ class CenterLayoutController {
 
     App app
 
+    RootLayoutController rootLayoutController
+
     GitHubService gitHubService = new GitHubService(Duration.minutes(1))
 
     @SuppressWarnings("GroovyUnusedDeclaration")
@@ -58,6 +60,7 @@ class CenterLayoutController {
         }
 
         updateEvents(events)
+        rootLayoutController.updateLastFetchTime()
     }
 
     void onFailure(Throwable throwable) {

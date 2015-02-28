@@ -102,6 +102,7 @@ class App extends Application {
         rootLayoutController.configure(this)
 
         centerLayoutController.setApp(this)
+        centerLayoutController.rootLayoutController = rootLayoutController
         centerLayoutController.initializeGithubService()
     }
 

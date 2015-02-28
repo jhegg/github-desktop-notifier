@@ -11,13 +11,20 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.StageStyle
 
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 class RootLayoutController {
     App app
     EditPreferencesController editPreferencesController
     Alert aboutBox
+    private static final String dateTimeFormatPattern = "yyyy/MM/dd HH:mm:ss z";
 
     @FXML
     Label address
+
+    @FXML
+    Label lastFetchTime
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
@@ -50,6 +57,10 @@ class RootLayoutController {
 
     void updateGitHubAddress() {
         address.setText(GitHubAddress.getResolvedUrl(app))
+    }
+
+    void updateLastFetchTime() {
+        lastFetchTime.setText(DateTimeFormatter.ofPattern(dateTimeFormatPattern).format(ZonedDateTime.now()))
     }
 
     @FXML

@@ -1,10 +1,15 @@
 package com.jhegg.github.notifier
 
+import javafx.embed.swing.JFXPanel
 import javafx.scene.control.Label
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class RootLayoutControllerTest extends Specification {
+    static {
+        new JFXPanel() // we need the JavaFX Toolkit to be initialized, or an IllegalStateException is thrown.
+    }
+
     RootLayoutController rootLayoutController = new RootLayoutController()
     App app = new App()
     CenterLayoutController centerLayoutController = Mock(CenterLayoutController)

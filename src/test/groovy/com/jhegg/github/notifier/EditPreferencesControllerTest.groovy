@@ -1,5 +1,6 @@
 package com.jhegg.github.notifier
 
+import javafx.embed.swing.JFXPanel
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -8,6 +9,10 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class EditPreferencesControllerTest extends Specification {
+    static {
+        new JFXPanel() // we need the JavaFX Toolkit to be initialized, or an IllegalStateException is thrown.
+    }
+
     EditPreferencesController controller = new EditPreferencesController()
     TextField token = new TextField()
     TextField userName = new TextField()

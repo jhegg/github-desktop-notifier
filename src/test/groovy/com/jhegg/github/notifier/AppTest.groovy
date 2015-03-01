@@ -56,16 +56,21 @@ class AppTest extends Specification {
         setup:
         SystemTray tray = Mock(SystemTray)
         app.metaClass.getSystemTray = { tray }
+        tray.metaClass.static.isSupported = {
+            println "Overridding SystemTray#isSupported"
+            return false
+        }
+        TrayIcon trayIcon = Mock(TrayIcon)
+        app.metaClass.buildTrayIcon = {
+            println "Overridding #buildTrayIcon"
+            return trayIcon
+        }
 
         when:
         app.addAppToTray()
 
         then:
-        1 * tray.add({ TrayIcon trayIcon ->
-            trayIcon.getActionListeners().size() == 2
-            trayIcon.getImage() != null
-            trayIcon.getPopupMenu().getItemCount() == 1
-            trayIcon.getPopupMenu().getItem(0).getLabel() == "Exit"
-        })
+        1 * tray.add(_ as TrayIcon)
+        1 * trayIcon.setImageAutoSize(true)
     }
 }

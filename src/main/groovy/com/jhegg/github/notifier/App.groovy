@@ -125,7 +125,7 @@ class App extends Application {
 
     void addAppToTray()  {
         SystemTray tray = getSystemTray()
-        trayIcon = new TrayIcon(ImageIO.read(this.getClass().getResource(getIconResourcePath())))
+        trayIcon = buildTrayIcon()
         trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
 
         MenuItem exitItem = new MenuItem("Exit")
@@ -141,6 +141,10 @@ class App extends Application {
         } catch (AWTException e) {
             e.printStackTrace()
         }
+    }
+
+    private TrayIcon buildTrayIcon() {
+        new TrayIcon(ImageIO.read(this.getClass().getResource(getIconResourcePath())))
     }
 
     private SystemTray getSystemTray() {

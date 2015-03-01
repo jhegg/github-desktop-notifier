@@ -32,6 +32,7 @@ test {
     testLogging {
         showStackTraces = true
         exceptionFormat = 'full'
+        showStandardStreams = true
         events "passed", "skipped", "failed"
     }
 }

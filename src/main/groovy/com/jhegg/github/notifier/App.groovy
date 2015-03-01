@@ -149,6 +149,7 @@ class App extends Application {
         PopupMenu popup = new PopupMenu()
         popup.add(exitItem)
         trayIcon.setPopupMenu(popup)
+        trayIcon.setImageAutoSize(true)
 
         try {
             tray.add(trayIcon)
@@ -160,7 +161,7 @@ class App extends Application {
     private String getIconResourcePath() {
         if (SystemUtils.IS_OS_LINUX) {
             // At least under XFCE, the icon that Java creates is NOT transparent, and looks horrible.
-            return "/github-notifier-black-background.png"
+            return "/github-notifier-black-background-256.png"
         }
         return "/github-notifier.png"
     }

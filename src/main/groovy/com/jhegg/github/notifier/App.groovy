@@ -8,6 +8,12 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
+import javax.swing.*
+import java.awt.*
+import java.awt.event.ActionListener
+import java.awt.image.BufferedImage
+import java.util.List
+
 class App extends Application {
     static final String gitHubUrlPrefix = "https://api.github.com/"
     static final String gitHubEnterpriseUrlPrefixWithPlaceholder = "https://%s/api/v3/"
@@ -19,13 +25,16 @@ class App extends Application {
     protected Stage primaryStage
     protected CenterLayoutController centerLayoutController
     protected RootLayoutController rootLayoutController
+    private TrayIcon trayIcon
 
     static void main(String[] args) {
         launch(App.class, args)
     }
 
     void exitApp() {
+        SystemTray tray = SystemTray.getSystemTray();
         Platform.exit()
+        tray.remove(trayIcon)
     }
 
     @Override
@@ -38,6 +47,8 @@ class App extends Application {
 
         this.primaryStage = primaryStage
         configurePrimaryStage()
+        Platform.setImplicitExit(false)
+        SwingUtilities.invokeLater { addAppToTray() }
     }
 
     def parseArguments(List<String> arguments) {
@@ -110,5 +121,70 @@ class App extends Application {
         // prevent users from resizing the window so small that the status bar disappears
         primaryStage.setMinWidth(700)
         primaryStage.setMinHeight(520)
+    }
+
+    private void addAppToTray()  {
+        Toolkit.getDefaultToolkit()
+        if (!SystemTray.isSupported()) {
+            System.out.println("No system tray support, application exiting.")
+            Platform.exit()
+        }
+
+        SystemTray tray = SystemTray.getSystemTray()
+
+        trayIcon = new TrayIcon(createImage())
+        trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
+
+        MenuItem exitItem = new MenuItem("Exit")
+        exitItem.addActionListener({exitApp()} as ActionListener)
+
+        PopupMenu popup = new PopupMenu()
+        popup.add(exitItem)
+        trayIcon.setPopupMenu(popup)
+
+        try {
+            tray.add(trayIcon)
+        } catch (AWTException e) {
+            e.printStackTrace()
+        }
+    }
+
+    private Image createImage() {
+        String text = "GN"
+
+        /*
+           Because font metrics is based on a graphics context, we need to create
+           a small, temporary image so we can ascertain the width and height
+           of the final image
+         */
+        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
+        Graphics2D g2d = img.createGraphics()
+        Font font = new Font("Arial", Font.PLAIN, 10)
+        g2d.setFont(font)
+        g2d.dispose()
+
+        img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB)
+        g2d = img.createGraphics()
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY)
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY)
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE)
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON)
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE)
+        g2d.setFont(font)
+        g2d.setColor(Color.GREEN)
+        g2d.drawString(text, 0, 11)
+        g2d.dispose()
+
+        return img
+    }
+
+    private void showStage() {
+        if (primaryStage) {
+            primaryStage.show()
+            primaryStage.toFront()
+        }
     }
 }

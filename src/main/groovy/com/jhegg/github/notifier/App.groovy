@@ -14,6 +14,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 import javafx.stage.Stage
+import org.apache.commons.lang.SystemUtils
 
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -139,7 +140,7 @@ class App extends Application {
         }
 
         SystemTray tray = SystemTray.getSystemTray()
-        trayIcon = new TrayIcon(ImageIO.read(this.getClass().getResource("/github-notifier.png")))
+        trayIcon = new TrayIcon(ImageIO.read(this.getClass().getResource(getIconResourcePath())))
         trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
 
         MenuItem exitItem = new MenuItem("Exit")
@@ -154,6 +155,14 @@ class App extends Application {
         } catch (AWTException e) {
             e.printStackTrace()
         }
+    }
+
+    private String getIconResourcePath() {
+        if (SystemUtils.IS_OS_LINUX) {
+            // At least under XFCE, the icon that Java creates is NOT transparent, and looks horrible.
+            return "/github-notifier-black-background.png"
+        }
+        return "/github-notifier.png"
     }
 
     private void showStage() {

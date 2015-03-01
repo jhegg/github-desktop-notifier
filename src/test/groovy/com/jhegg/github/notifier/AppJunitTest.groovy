@@ -5,6 +5,7 @@ import de.saxsys.javafx.test.TestInJfxThread
 import javafx.stage.Stage
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 import static junit.framework.Assert.assertEquals
 import static junit.framework.Assert.assertNotNull
@@ -23,5 +24,16 @@ public class AppJunitTest {
         assertNotNull(app.rootLayoutController)
         assertNotNull(app.centerLayoutController)
         assertEquals(app.centerLayoutController.rootLayoutController, app.rootLayoutController)
+    }
+
+    @Test
+    @TestInJfxThread
+    public void testShowStage() throws Exception {
+        App app = new App()
+        def primaryStage = Mockito.mock(Stage)
+        app.primaryStage = primaryStage
+        primaryStage.metaClass.show = {} // #show is final and can't be mocked, so I have to override it
+        app.showStage()
+        Mockito.verify(primaryStage).toFront()
     }
 }

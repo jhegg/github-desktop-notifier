@@ -56,10 +56,6 @@ class AppTest extends Specification {
         setup:
         SystemTray tray = Mock(SystemTray)
         app.metaClass.getSystemTray = { tray }
-        tray.metaClass.static.isSupported = {
-            println "Overridding SystemTray#isSupported"
-            return false
-        }
         TrayIcon trayIcon = Mock(TrayIcon)
         app.metaClass.buildTrayIcon = {
             println "Overridding #buildTrayIcon"

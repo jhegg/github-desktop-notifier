@@ -148,14 +148,11 @@ class App extends Application {
     }
 
     private SystemTray getSystemTray() {
-        Toolkit.getDefaultToolkit()
         if (!SystemTray.isSupported()) {
             System.out.println("No system tray support, application exiting.")
             Platform.exit()
         }
-
-        SystemTray tray = SystemTray.getSystemTray()
-        tray
+        return SystemTray.getSystemTray()
     }
 
     String getIconResourcePath() {
@@ -170,7 +167,7 @@ class App extends Application {
         SystemUtils.IS_OS_LINUX
     }
 
-    private void showStage() {
+    void showStage() {
         if (primaryStage) {
             primaryStage.show()
             primaryStage.toFront()

@@ -12,9 +12,9 @@ import javafx.stage.Stage
 
 class EditPreferencesController {
     @FXML
-    private TextField token
+    TextField token
     @FXML
-    private TextField userName
+    TextField userName
 
     App app
     Stage dialogStage

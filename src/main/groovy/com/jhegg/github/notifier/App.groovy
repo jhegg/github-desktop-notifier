@@ -47,6 +47,7 @@ class App extends Application {
 
         this.primaryStage = primaryStage
         configurePrimaryStage()
+        primaryStage.show()
         Platform.setImplicitExit(false)
         Platform.runLater { addAppToTray() }
     }
@@ -81,12 +82,11 @@ class App extends Application {
         exitApp()
     }
 
-    private void configurePrimaryStage() {
+    void configurePrimaryStage() {
         primaryStage.title = "GitHub Desktop Notifier"
         buildScene()
         configureControllers()
         enforceMinimumWindowSize()
-        primaryStage.show()
     }
 
     private void buildScene() {

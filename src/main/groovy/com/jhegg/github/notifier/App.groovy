@@ -123,14 +123,8 @@ class App extends Application {
         primaryStage.setMinHeight(520)
     }
 
-    private void addAppToTray()  {
-        Toolkit.getDefaultToolkit()
-        if (!SystemTray.isSupported()) {
-            System.out.println("No system tray support, application exiting.")
-            Platform.exit()
-        }
-
-        SystemTray tray = SystemTray.getSystemTray()
+    void addAppToTray()  {
+        SystemTray tray = getSystemTray()
         trayIcon = new TrayIcon(ImageIO.read(this.getClass().getResource(getIconResourcePath())))
         trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
 
@@ -147,6 +141,17 @@ class App extends Application {
         } catch (AWTException e) {
             e.printStackTrace()
         }
+    }
+
+    private SystemTray getSystemTray() {
+        Toolkit.getDefaultToolkit()
+        if (!SystemTray.isSupported()) {
+            System.out.println("No system tray support, application exiting.")
+            Platform.exit()
+        }
+
+        SystemTray tray = SystemTray.getSystemTray()
+        tray
     }
 
     String getIconResourcePath() {

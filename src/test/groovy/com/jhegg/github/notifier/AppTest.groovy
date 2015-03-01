@@ -4,6 +4,9 @@ import org.apache.commons.lang.SystemUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.awt.SystemTray
+import java.awt.TrayIcon
+
 class AppTest extends Specification {
     App app = new App()
 
@@ -47,5 +50,22 @@ class AppTest extends Specification {
     def "isOsLinux returns expected value"() {
         expect:
         app.isOsLinux() == SystemUtils.IS_OS_LINUX
+    }
+
+    def "addAppToTray"() {
+        setup:
+        SystemTray tray = Mock(SystemTray)
+        app.metaClass.getSystemTray = { tray }
+
+        when:
+        app.addAppToTray()
+
+        then:
+        1 * tray.add({ TrayIcon trayIcon ->
+            trayIcon.getActionListeners().size() == 2
+            trayIcon.getImage() != null
+            trayIcon.getPopupMenu().getItemCount() == 1
+            trayIcon.getPopupMenu().getItem(0).getLabel() == "Exit"
+        })
     }
 }

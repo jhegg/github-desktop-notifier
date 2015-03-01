@@ -157,7 +157,7 @@ class App extends Application {
         return "/github-notifier.png"
     }
 
-    private boolean isOsLinux() {
+    boolean isOsLinux() {
         SystemUtils.IS_OS_LINUX
     }
 

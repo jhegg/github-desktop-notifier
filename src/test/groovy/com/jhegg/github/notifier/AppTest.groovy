@@ -1,5 +1,6 @@
 package com.jhegg.github.notifier
 
+import org.apache.commons.lang.SystemUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -41,5 +42,10 @@ class AppTest extends Specification {
         system | is_os_linux || result
         "Linux" | true || "/github-notifier-black-background-256.png"
         "Windows" | false || "/github-notifier.png"
+    }
+
+    def "isOsLinux returns expected value"() {
+        expect:
+        app.isOsLinux() == SystemUtils.IS_OS_LINUX
     }
 }

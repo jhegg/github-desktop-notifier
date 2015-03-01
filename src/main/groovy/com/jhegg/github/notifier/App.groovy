@@ -2,12 +2,20 @@ package com.jhegg.github.notifier
 
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.embed.swing.SwingFXUtils
 import javafx.fxml.FXMLLoader
+import javafx.geometry.VPos
 import javafx.scene.Scene
+import javafx.scene.SnapshotParameters
+import javafx.scene.canvas.GraphicsContext
+import javafx.scene.image.WritableImage
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
+import javafx.scene.text.FontWeight
+import javafx.scene.text.TextAlignment
 import javafx.stage.Stage
 
+import javax.imageio.ImageIO
 import javax.swing.*
 import java.awt.*
 import java.awt.event.ActionListener
@@ -48,7 +56,7 @@ class App extends Application {
         this.primaryStage = primaryStage
         configurePrimaryStage()
         Platform.setImplicitExit(false)
-        SwingUtilities.invokeLater { addAppToTray() }
+        Platform.runLater { addAppToTray() }
     }
 
     def parseArguments(List<String> arguments) {
@@ -131,8 +139,7 @@ class App extends Application {
         }
 
         SystemTray tray = SystemTray.getSystemTray()
-
-        trayIcon = new TrayIcon(createImage())
+        trayIcon = new TrayIcon(ImageIO.read(this.getClass().getResource("/github-notifier.png")))
         trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
 
         MenuItem exitItem = new MenuItem("Exit")
@@ -147,38 +154,6 @@ class App extends Application {
         } catch (AWTException e) {
             e.printStackTrace()
         }
-    }
-
-    private Image createImage() {
-        String text = "GN"
-
-        /*
-           Because font metrics is based on a graphics context, we need to create
-           a small, temporary image so we can ascertain the width and height
-           of the final image
-         */
-        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
-        Graphics2D g2d = img.createGraphics()
-        Font font = new Font("Arial", Font.PLAIN, 10)
-        g2d.setFont(font)
-        g2d.dispose()
-
-        img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB)
-        g2d = img.createGraphics()
-        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY)
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY)
-        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE)
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON)
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE)
-        g2d.setFont(font)
-        g2d.setColor(Color.GREEN)
-        g2d.drawString(text, 0, 11)
-        g2d.dispose()
-
-        return img
     }
 
     private void showStage() {

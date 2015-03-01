@@ -1,5 +1,8 @@
 package com.jhegg.github.notifier
 
+import groovy.transform.EqualsAndHashCode
+
+@EqualsAndHashCode
 class GitHubEvent {
     String id
     String type

@@ -108,6 +108,7 @@ class CenterLayoutController {
             stage.setX(Double.MAX_VALUE);
             stage.setScene(new Scene(new Group()))
             stage.show()
+            stage.setIconified(true) // this may fix an issue on Linux where the "hidden" window is still visible
             hiddenStage = stage
         }
     }

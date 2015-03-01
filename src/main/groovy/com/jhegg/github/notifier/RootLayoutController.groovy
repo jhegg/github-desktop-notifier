@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter
 class RootLayoutController {
     App app
     EditPreferencesController editPreferencesController
-    Alert aboutBox
+    protected Alert aboutBox
     private static final String dateTimeFormatPattern = "yyyy/MM/dd HH:mm:ss z";
 
     @FXML

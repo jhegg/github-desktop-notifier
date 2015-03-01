@@ -2,25 +2,16 @@ package com.jhegg.github.notifier
 
 import javafx.application.Application
 import javafx.application.Platform
-import javafx.embed.swing.SwingFXUtils
 import javafx.fxml.FXMLLoader
-import javafx.geometry.VPos
 import javafx.scene.Scene
-import javafx.scene.SnapshotParameters
-import javafx.scene.canvas.GraphicsContext
-import javafx.scene.image.WritableImage
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
-import javafx.scene.text.FontWeight
-import javafx.scene.text.TextAlignment
 import javafx.stage.Stage
 import org.apache.commons.lang.SystemUtils
 
 import javax.imageio.ImageIO
-import javax.swing.*
 import java.awt.*
 import java.awt.event.ActionListener
-import java.awt.image.BufferedImage
 import java.util.List
 
 class App extends Application {

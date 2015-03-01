@@ -1,6 +1,5 @@
 package com.jhegg.github.notifier
 
-import org.apache.commons.lang.SystemUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 

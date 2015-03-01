@@ -6,9 +6,14 @@ import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
 import javafx.concurrent.WorkerStateEvent
 import javafx.fxml.FXML
+import javafx.scene.Group
+import javafx.scene.Scene
 import javafx.scene.control.ListView
 import javafx.scene.control.TextArea
+import javafx.stage.Stage
+import javafx.stage.StageStyle
 import javafx.util.Duration
+import org.controlsfx.control.Notifications
 
 class CenterLayoutController {
     @FXML
@@ -23,7 +28,9 @@ class CenterLayoutController {
 
     RootLayoutController rootLayoutController
 
-    GitHubService gitHubService = new GitHubService(Duration.minutes(1))
+    GitHubService gitHubService = new GitHubService(Duration.seconds(10))
+
+    Stage hiddenStage
 
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
@@ -33,6 +40,8 @@ class CenterLayoutController {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 {observableValue, oldValue, newValue ->
                     displayTextArea(newValue)} as ChangeListener)
+
+        initializeHiddenStage()
     }
 
     public void initializeGithubService() {
@@ -59,8 +68,48 @@ class CenterLayoutController {
             new GitHubEvent(id: it.id, type: it.type, login: it.actor.login, created_at: it.created_at, json: JsonOutput.toJson(it))
         }
 
+        notifyEvents(events)
         updateEvents(events)
         rootLayoutController.updateLastFetchTime()
+    }
+
+    void notifyEvents(List<GitHubEvent> gitHubEvents) {
+        if (gitHubEvents.isEmpty()) { return }
+
+        def newEventsForNotification = getNewEventsForNotification(gitHubEvents).reverse()
+        newEventsForNotification.eachWithIndex { GitHubEvent event, index ->
+            if (index < 3) { notifyEvent(event) } // We don't want to open too many notifications
+        }
+    }
+
+    List<GitHubEvent> getNewEventsForNotification(List<GitHubEvent> gitHubEvents) {
+        def newEvents = gitHubEvents.collect()
+        newEvents.removeAll(observableList)
+        return newEvents
+    }
+
+    void notifyEvent(GitHubEvent gitHubEvent) {
+        Notifications.create().title(gitHubEvent.type ?: "Unknown event").text(gitHubEvent.toString()).show()
+    }
+
+    /**
+     * This is a hack, because JavaFX does not have support yet for the system tray. When the application window is
+     * hidden, then the Notifications don't have a stage upon which to be displayed. So, we create a second hidden
+     * stage that lives off-screen, and does not show up on the task bar (so it can't be hidden by the user).
+     *
+     * This could be a clue that I should look for alternative mechanisms for doing the notifications...
+     */
+    private void initializeHiddenStage() {
+        if (!hiddenStage) {
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.UTILITY);
+            stage.setMaxHeight(0);
+            stage.setMaxWidth(0);
+            stage.setX(Double.MAX_VALUE);
+            stage.setScene(new Scene(new Group()))
+            stage.show()
+            hiddenStage = stage
+        }
     }
 
     void onFailure(Throwable throwable) {

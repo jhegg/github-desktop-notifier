@@ -31,7 +31,7 @@ class App extends Application {
         launch(App.class, args)
     }
 
-    void exitApp() {
+    synchronized void exitApp() {
         SystemTray tray = SystemTray.getSystemTray();
         Platform.exit()
         tray.remove(trayIcon)

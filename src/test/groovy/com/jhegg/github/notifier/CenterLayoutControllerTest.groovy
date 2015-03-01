@@ -1,10 +1,12 @@
 package com.jhegg.github.notifier
 
+import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.embed.swing.JFXPanel
 import javafx.scene.control.ListView
 import javafx.scene.control.MultipleSelectionModel
 import javafx.scene.control.TextArea
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -19,6 +21,9 @@ class CenterLayoutControllerTest extends Specification {
     def selectionModel = Mock(MultipleSelectionModel)
     def gitHubService = Mock(GitHubService)
     def app = Mock(App)
+
+    @Shared GitHubEvent genericEvent = new GitHubEvent(login: "josh", created_at: "now")
+    @Shared GitHubEvent newEvent = new GitHubEvent(login: "josh2", created_at: "now2")
 
     def setup() {
         listView.selectionModel = selectionModel
@@ -109,10 +114,31 @@ class CenterLayoutControllerTest extends Specification {
         new GitHubEvent(id: "123", login: "josh", created_at: "now", json: "{\"id\": \"123\"}") || "{\n    \"id\": \"123\"\n}"
     }
 
+    @Unroll
+    def "getNewEventsForNotification with #existing.size() oldEvents and #input.size() new, expected #output.size() result(s)"() {
+        setup:
+        centerLayoutController.observableList = FXCollections.<GitHubEvent>observableArrayList()
+        centerLayoutController.observableList.addAll(existing)
+
+        expect:
+        centerLayoutController.getNewEventsForNotification(input) == output
+
+        where:
+        existing | input || output
+        [] | [] || []
+        [genericEvent] | [] || []
+        [] | [genericEvent] || [genericEvent]
+        [] | [genericEvent, newEvent] || [genericEvent, newEvent]
+        [genericEvent] | [newEvent] || [newEvent]
+        [genericEvent, newEvent] | [] || []
+        [genericEvent, newEvent] | [newEvent] || []
+    }
+
     def "initialize"() {
         setup:
         centerLayoutController.listView = new ListView<GitHubEvent>()
         centerLayoutController.textArea = new TextArea()
+        centerLayoutController.metaClass.initializeHiddenStage = {}
 
         when:
         centerLayoutController.initialize()
@@ -149,6 +175,7 @@ class CenterLayoutControllerTest extends Specification {
     def "success handler parses single push event"() {
         setup:
         centerLayoutController.rootLayoutController = Mock(RootLayoutController)
+        centerLayoutController.metaClass.notifyEvent = { GitHubEvent event -> return }
 
         when:
         centerLayoutController.onSuccess("[${getExampleSinglePushPayload()}]")

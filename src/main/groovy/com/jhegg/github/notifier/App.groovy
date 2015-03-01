@@ -149,12 +149,16 @@ class App extends Application {
         }
     }
 
-    private String getIconResourcePath() {
-        if (SystemUtils.IS_OS_LINUX) {
+    String getIconResourcePath() {
+        if (isOsLinux()) {
             // At least under XFCE, the icon that Java creates is NOT transparent, and looks horrible.
             return "/github-notifier-black-background-256.png"
         }
         return "/github-notifier.png"
+    }
+
+    private boolean isOsLinux() {
+        SystemUtils.IS_OS_LINUX
     }
 
     private void showStage() {

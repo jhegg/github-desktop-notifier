@@ -34,19 +34,22 @@ class CenterLayoutControllerTest extends Specification {
     }
 
     @Unroll
-    def "updateEvents with list: #list"() {
+    def "updateEvents with #resultSize events"() {
+        setup:
+        centerLayoutController.observableList = FXCollections.<GitHubEvent>observableArrayList()
+        centerLayoutController.listView = new ListView<>(centerLayoutController.observableList)
+
         when:
         centerLayoutController.updateEvents(events as List<GitHubEvent>)
 
         then:
-        1 * observableList.setAll({it.size() == resultSize})
-        timesSelected * selectionModel.selectFirst()
+        centerLayoutController.observableList.size() == resultSize
 
         where:
-        events || resultSize | timesSelected
-        [] || 0 | 0
-        [new GitHubEvent(id: "1")] || 1 | 1
-        [new GitHubEvent(id: "1"), new GitHubEvent(id: "2")] || 2 | 1
+        events || resultSize
+        [] || 0
+        [new GitHubEvent(id: "1")] || 1
+        [new GitHubEvent(id: "1"), new GitHubEvent(id: "2")] || 2
     }
 
     def "displayError"() {
@@ -64,6 +67,7 @@ class CenterLayoutControllerTest extends Specification {
     def "refreshDisplay with username: '#userName'"() {
         setup:
         app.getUserName() >> userName
+        centerLayoutController.textArea = new TextArea()
 
         when:
         centerLayoutController.refreshDisplay()
@@ -145,6 +149,51 @@ class CenterLayoutControllerTest extends Specification {
         "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson || "creatorLogin acted on repo SomeOrg/some-new-repo"
     }
 
+    @Unroll
+    def "purgeEventsOver200 where size = #size"() {
+        setup:
+        observableList.size() >> size
+
+        when:
+        centerLayoutController.purgeEventsOver200()
+
+        then:
+        times * observableList.remove(!null)
+
+        where:
+        size | times
+        0 | 0
+        1 | 0
+        200 | 0
+        201 | 1
+        202 | 2
+        300 | 100
+    }
+
+    @Unroll
+    def "purgeEventsOver200 using real data where size = #size"() {
+        setup:
+        centerLayoutController.observableList = FXCollections.<GitHubEvent>observableArrayList()
+        def events = []
+        (1..size).each { int i ->
+            events << new GitHubEvent(id: i)
+        }
+        centerLayoutController.observableList.addAll(events)
+
+        when:
+        centerLayoutController.purgeEventsOver200()
+
+        then:
+        centerLayoutController.observableList.size() == result
+
+        where:
+        size | result
+        200 | 200
+        201 | 200
+        202 | 200
+        300 | 200
+    }
+
     def "initialize"() {
         setup:
         centerLayoutController.listView = new ListView<GitHubEvent>()
@@ -180,25 +229,27 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.onSuccess("{}")
 
         then:
-        1 * observableList.setAll({it.isEmpty()})
+        1 * observableList.addAll({it.isEmpty()})
     }
 
     def "success handler parses single push event"() {
         setup:
         centerLayoutController.rootLayoutController = Mock(RootLayoutController)
         centerLayoutController.metaClass.notifyEvent = { GitHubEvent event -> return }
+        centerLayoutController.observableList = FXCollections.<GitHubEvent>observableArrayList()
+        centerLayoutController.listView = new ListView<>(centerLayoutController.observableList)
 
         when:
         centerLayoutController.onSuccess("[${GitHubJsonPayloadExamples.exampleSinglePushPayload}]")
 
         then:
-        1 * observableList.setAll({ List<GitHubEvent> events ->
-            events.size() == 1
-            events[0].id == "2671420212"
-            events[0].type == "PushEvent"
-            events[0].login == "SomeUser"
-            events[0].created_at == "2015-02-01T01:02:03Z"
-            !events[0].json.isEmpty()
-        })
+        centerLayoutController.observableList.size() == 1
+        centerLayoutController.observableList.each { GitHubEvent event ->
+            event.id == "2671420212"
+            event.type == "PushEvent"
+            event.login == "SomeUser"
+            event.created_at == "2015-02-01T01:02:03Z"
+            !event.json.isEmpty()
+        }
     }
 }

@@ -151,14 +151,29 @@ class CenterLayoutController {
     }
 
     void updateEvents(List<GitHubEvent> githubEvents) {
-        observableList.setAll(githubEvents)
-        if (!githubEvents.isEmpty()) {
+        def newEvents = getNewEventsForNotification(githubEvents)
+        observableList.addAll(newEvents)
+        if (!newEvents.isEmpty() && listView.getSelectionModel().getSelectedItem() == null) {
             listView.getSelectionModel().selectFirst()
+        }
+
+        purgeEventsOver200()
+    }
+
+    void purgeEventsOver200() {
+        def maxEvents = 200
+        if (observableList.size() > maxEvents) {
+            (maxEvents..(observableList.size() - 1)).each {
+                observableList.remove(maxEvents) // always remove the 201st entry in the list
+            }
         }
     }
 
     void refreshDisplay() {
+        observableList.clear()
+        textArea.setText("")
         if (app.userName) {
+            textArea.setText("Loading...")
             gitHubService.restart() // todo This is not an ideal usage for proper error handling
         }
     }

@@ -77,8 +77,7 @@ class CenterLayoutController {
     void notifyEvents(List<GitHubEvent> gitHubEvents) {
         if (gitHubEvents.isEmpty()) { return }
 
-        def newEventsForNotification = getNewEventsForNotification(gitHubEvents).reverse()
-        newEventsForNotification.eachWithIndex { GitHubEvent event, index ->
+        getNewEventsForNotification(gitHubEvents).eachWithIndex { GitHubEvent event, index ->
             if (index < 3) { notifyEvent(event) } // We don't want to open too many notifications
         }
     }
@@ -90,7 +89,23 @@ class CenterLayoutController {
     }
 
     void notifyEvent(GitHubEvent gitHubEvent) {
-        Notifications.create().title(gitHubEvent.type ?: "Unknown event").text(gitHubEvent.toString()).show()
+        Notifications.create()
+                .title(gitHubEvent.type ?: "Unknown event")
+                .text(getNotificationText(gitHubEvent))
+                .hideAfter(Duration.seconds(5d))
+                .show()
+    }
+
+    String getNotificationText(GitHubEvent gitHubEvent) {
+        def json = new JsonSlurper().parseText(gitHubEvent.json)
+
+        if (gitHubEvent.type == "PushEvent") {
+            String truncatedMessage = json.payload.commits[0].message.tokenize('\n\r').get(0)
+            return "${gitHubEvent.login} pushed ${json.payload.size} commit(s) to repo ${json.repo.name}\n\n" +
+                    "\"${truncatedMessage.take(85)} ...\""
+        } else {
+            "${gitHubEvent.login} acted on repo ${json.repo.name}"
+        }
     }
 
     /**

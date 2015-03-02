@@ -134,6 +134,17 @@ class CenterLayoutControllerTest extends Specification {
         [genericEvent, newEvent] | [newEvent] || []
     }
 
+    @Unroll
+    def "getNotificationText for type #type and login #login"() {
+        expect:
+        centerLayoutController.getNotificationText(new GitHubEvent(type: type, login: login, json: json)) == result
+
+        where:
+        type | login | json || result
+        "PushEvent" | "SomeUser" | GitHubJsonPayloadExamples.exampleSinglePushPayload || "SomeUser pushed 1 commit(s) to repo SomeOrg/i-made-this\n\n\"I made this thing ...\""
+        "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson || "creatorLogin acted on repo SomeOrg/some-new-repo"
+    }
+
     def "initialize"() {
         setup:
         centerLayoutController.listView = new ListView<GitHubEvent>()
@@ -178,7 +189,7 @@ class CenterLayoutControllerTest extends Specification {
         centerLayoutController.metaClass.notifyEvent = { GitHubEvent event -> return }
 
         when:
-        centerLayoutController.onSuccess("[${getExampleSinglePushPayload()}]")
+        centerLayoutController.onSuccess("[${GitHubJsonPayloadExamples.exampleSinglePushPayload}]")
 
         then:
         1 * observableList.setAll({ List<GitHubEvent> events ->
@@ -189,53 +200,5 @@ class CenterLayoutControllerTest extends Specification {
             events[0].created_at == "2015-02-01T01:02:03Z"
             !events[0].json.isEmpty()
         })
-    }
-
-    String getExampleSinglePushPayload() {
-        """{
-    "actor": {
-        "avatar_url": "https://avatars.githubusercontent.com/u/12345?",
-        "gravatar_id": "",
-        "id": 12345,
-        "login": "SomeUser",
-        "url": "https://api.github.com/users/SomeUser"
-    },
-    "created_at": "2015-02-01T01:02:03Z",
-    "id": "2671420212",
-    "org": {
-        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
-        "gravatar_id": "",
-        "id": 123456,
-        "login": "SomeOrg",
-        "url": "https://api.github.com/orgs/SomeOrg"
-    },
-    "payload": {
-        "before": "8aeb1085cf37920495bac0f0c0ea00d7cd6d2105",
-        "commits": [
-            {
-                "author": {
-                    "email": "someuser@example.com",
-                    "name": "Some User"
-                },
-                "distinct": true,
-                "message": "I made this thing",
-                "sha": "05351301f9400ddaf5d7aaec4f55ab13a06986c3",
-                "url": "https://api.github.com/repos/SomeOrg/i-made-this/commits/05351301f9400ddaf5d7aaec4f55ab13a06986c3"
-            }
-        ],
-        "distinct_size": 1,
-        "head": "05351301f9400ddaf5d7aaec4f55ab13a06986c3",
-        "push_id": 551032016,
-        "ref": "refs/heads/master",
-        "size": 1
-    },
-    "public": true,
-    "repo": {
-        "id": 1234567,
-        "name": "SomeOrg/i-made-this",
-        "url": "https://api.github.com/repos/SomeOrg/i-made-this"
-    },
-    "type": "PushEvent"
-}"""
     }
 }

@@ -4,6 +4,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import javafx.beans.value.ChangeListener
 import javafx.collections.FXCollections
+import javafx.collections.transformation.SortedList
 import javafx.concurrent.WorkerStateEvent
 import javafx.fxml.FXML
 import javafx.scene.Group
@@ -25,6 +26,8 @@ class CenterLayoutController {
 
     def observableList = FXCollections.<GitHubEvent>observableArrayList()
 
+    SortedList<GitHubEvent> sortedList
+
     App app
 
     RootLayoutController rootLayoutController
@@ -36,7 +39,9 @@ class CenterLayoutController {
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
     void initialize() {
-        listView.setItems(observableList)
+        def comparison = [compare: { a, b -> a.equals(b) ? 0 : a < b ? 1 : -1}] as Comparator
+        sortedList = new SortedList<>(observableList, comparison)
+        listView.setItems(sortedList)
         textArea.setEditable(false)
         listView.getSelectionModel().selectedItemProperty().addListener(
                 {observableValue, oldValue, newValue ->

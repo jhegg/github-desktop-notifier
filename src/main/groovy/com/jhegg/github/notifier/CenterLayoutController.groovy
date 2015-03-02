@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import javafx.util.Duration
+import org.apache.commons.lang.SystemUtils
 import org.controlsfx.control.Notifications
 
 class CenterLayoutController {
@@ -97,18 +98,30 @@ class CenterLayoutController {
      * hidden, then the Notifications don't have a stage upon which to be displayed. So, we create a second hidden
      * stage that lives off-screen, and does not show up on the task bar (so it can't be hidden by the user).
      *
-     * This could be a clue that I should look for alternative mechanisms for doing the notifications...
+     * todo This could be a clue that I should look for alternative mechanisms for doing the notifications...
      */
     private void initializeHiddenStage() {
         if (!hiddenStage) {
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.UTILITY);
-            stage.setMaxHeight(0);
-            stage.setMaxWidth(0);
-            stage.setX(Double.MAX_VALUE);
+            Stage stage = new Stage()
+            stage.initStyle(StageStyle.UTILITY)
+            stage.setMaxHeight(0)
+            stage.setMaxWidth(0)
+            stage.setHeight(0)
+            stage.setWidth(0)
+            if (SystemUtils.IS_OS_LINUX) {
+                stage.centerOnScreen() // try to hide it behind the main window
+                stage.toBack()
+                stage.setOpacity(0d) // try to make it translucent so it's less obvious
+            } else {
+                stage.setX(Double.MAX_VALUE) // move the window off-screen (does not work on Linux)
+            }
             stage.setScene(new Scene(new Group()))
             stage.show()
-            stage.setIconified(true) // this may fix an issue on Linux where the "hidden" window is still visible
+            if (SystemUtils.IS_OS_LINUX) {
+                stage.toBack()
+                stage.centerOnScreen()
+                stage.setX(20000d) // move the window off-screen, workaround a bug on Linux
+            }
             hiddenStage = stage
         }
     }

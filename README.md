@@ -5,6 +5,8 @@
 
 A cross-platform desktop notifier of GitHub activity, built using JavaFX and Groovy.
 
+## What does it do?
+
 This app periodically queries the GitHub API for new notifications that your GitHub user has received. For example, you can receive notifications of pushes, branch creation, pull requests, issues, etc.
 
 The app is not very pretty right now, it's just functional. I'm open to suggestions for the UI, just open an issue to let me know.
@@ -47,7 +49,7 @@ Run with `-h` to see the available arguments. Currently they are:
 
 The app is setup to talk to GitHub.com, as long as the username is entered.
 
-1. Get [an OAuth token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) for your GitHub.com account. It does not require any special permissions.
+1. Get [an OAuth token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) for your GitHub.com account. It does not require any special permissions/scopes, so it is recommended that you uncheck all of the scopes.
 2. Open `GitHub Desktop Notifier`, click on `Edit -> Preferences`, and put in the user name and OAuth token, then click OK.
   * Or, `./gradlew run -Parguments=-u,jhegg,-t,12345`
 
@@ -55,6 +57,6 @@ The app is setup to talk to GitHub.com, as long as the username is entered.
 
 Note: Until issue #5 is fixed, you can't set the GitHub Enterprise hostname from the UI, only from the command line parameter.
 
-1. Get [an OAuth token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) for your GitHub.com account. It does not require any special permissions.
+1. Get [an OAuth token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) for your GitHub Enterprise account. It does not require any special permissions/scopes, so it is recommended that you uncheck all of the scopes.
 2. Start the app with `-u <user> -t <token> -n <github_enterprise_hostname>`.
   * Or, `./gradlew run -Parguments=-u,jhegg,-t,12345,-n,localhost`

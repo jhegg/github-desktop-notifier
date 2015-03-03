@@ -28,6 +28,11 @@ javafx {
     mainClass = mainClassName
 }
 
+run {
+    // Example:  ./gradlew run -Parguments=-u,jhegg,-t,12345,-n,enterprise.example.com
+    if (project.hasProperty('arguments')) { args(arguments.split(','))}
+}
+
 test {
     testLogging {
         showStackTraces = true

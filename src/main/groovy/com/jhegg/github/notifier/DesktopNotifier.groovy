@@ -10,6 +10,7 @@ import org.apache.commons.lang.SystemUtils
 import org.controlsfx.control.Notifications
 
 class DesktopNotifier {
+    static final String notifySendPath = '/usr/bin/notify-send'
     boolean isPlatformLinux = SystemUtils.IS_OS_LINUX
 
     Stage hiddenStage
@@ -23,11 +24,16 @@ class DesktopNotifier {
     }
 
     void sendLibNotifyMessage(GitHubEvent event) {
-
+        def command = "${notifySendPath} \"${event.type ?: "Unknown event"}\" \"${getNotificationText(event)}\""
+        def process = command.execute()
+        process.consumeProcessOutput()
+        if (process.exitValue() != 0) {
+            throw new RuntimeException("Attempting to run the following command resulted in an error:  ${command}")
+        }
     }
 
     boolean hasLibNotify() {
-        return new File('/usr/bin/notify-send').exists()
+        return new File(notifySendPath).exists()
     }
 
     void sendJavaFxMessage(GitHubEvent event) {

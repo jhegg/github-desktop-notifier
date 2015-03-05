@@ -12,18 +12,19 @@ class DesktopNotifierTest extends Specification {
         desktopNotifier.getNotificationText(new GitHubEvent(type: type, login: login, json: json)) == result
 
         where:
-        type | login | json || result
-        "PushEvent" | "SomeUser" | GitHubJsonPayloadExamples.exampleSinglePushPayload || "SomeUser pushed 1 commit(s) to repo SomeOrg/i-made-this\n\n\"I made this thing ...\""
-        "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson || "creatorLogin acted on repo SomeOrg/some-new-repo"
+        type          | login          | json                                               || result
+        "PushEvent"   | "SomeUser"     | GitHubJsonPayloadExamples.exampleSinglePushPayload || "SomeUser pushed 1 commit(s) to repo SomeOrg/i-made-this\n\n\"I made this thing ...\""
+        "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson   || "creatorLogin acted on repo SomeOrg/some-new-repo"
     }
 
     @Unroll
-    def "send event where isPlatformLinux=#isPlatformLinux"() {
+    def "send event where isPlatformLinux==#isPlatformLinux and hasLibNotify==#hasLibNotify"() {
         setup:
         boolean sentJavaFxMessage = false
         boolean sentLibNotifyMessage = false
-        desktopNotifier.metaClass.sendJavaFxMessage = { GitHubEvent event -> sentJavaFxMessage = true}
-        desktopNotifier.metaClass.sendLibNotifyMessage = { GitHubEvent event -> sentLibNotifyMessage = true}
+        desktopNotifier.metaClass.sendJavaFxMessage = { GitHubEvent event -> sentJavaFxMessage = true }
+        desktopNotifier.metaClass.sendLibNotifyMessage = { GitHubEvent event -> sentLibNotifyMessage = true }
+        desktopNotifier.metaClass.hasLibNotify = { return hasLibNotify }
         desktopNotifier.isPlatformLinux = isPlatformLinux
 
         when:
@@ -34,8 +35,10 @@ class DesktopNotifierTest extends Specification {
         sentLibNotifyMessage == wasLibNotifyMessageSent
 
         where:
-        isPlatformLinux || wasJavaFxMessageSent | wasLibNotifyMessageSent
-        true || false | true
-        false || true | false
+        isPlatformLinux | hasLibNotify || wasJavaFxMessageSent | wasLibNotifyMessageSent
+        true            | true         || false | true
+        true            | false        || true | false
+        false           | false        || true | false
+        false           | true         || true | false
     }
 }

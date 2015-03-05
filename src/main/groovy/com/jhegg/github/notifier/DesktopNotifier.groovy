@@ -15,7 +15,7 @@ class DesktopNotifier {
     Stage hiddenStage
 
     void send(GitHubEvent event) {
-        if (isPlatformLinux) {
+        if (isPlatformLinux && hasLibNotify()) {
             sendLibNotifyMessage(event)
         } else {
             sendJavaFxMessage(event)
@@ -24,6 +24,10 @@ class DesktopNotifier {
 
     void sendLibNotifyMessage(GitHubEvent event) {
 
+    }
+
+    boolean hasLibNotify() {
+        return new File('/usr/bin/notify-send').exists()
     }
 
     void sendJavaFxMessage(GitHubEvent event) {

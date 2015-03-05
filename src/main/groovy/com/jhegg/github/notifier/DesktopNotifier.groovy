@@ -64,6 +64,8 @@ class DesktopNotifier {
      * Note: this does NOT work well on Linux platforms. It seems to be fine for Windows, though.
      */
     void initializeHiddenStage() {
+        if (isPlatformLinux) return
+
         if (!hiddenStage) {
             Stage stage = new Stage()
             stage.initStyle(StageStyle.UTILITY)

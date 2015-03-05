@@ -139,17 +139,6 @@ class CenterLayoutControllerTest extends Specification {
     }
 
     @Unroll
-    def "getNotificationText for type #type and login #login"() {
-        expect:
-        centerLayoutController.getNotificationText(new GitHubEvent(type: type, login: login, json: json)) == result
-
-        where:
-        type | login | json || result
-        "PushEvent" | "SomeUser" | GitHubJsonPayloadExamples.exampleSinglePushPayload || "SomeUser pushed 1 commit(s) to repo SomeOrg/i-made-this\n\n\"I made this thing ...\""
-        "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson || "creatorLogin acted on repo SomeOrg/some-new-repo"
-    }
-
-    @Unroll
     def "purgeEventsOver200 where size = #size"() {
         setup:
         observableList.size() >> size
@@ -198,7 +187,7 @@ class CenterLayoutControllerTest extends Specification {
         setup:
         centerLayoutController.listView = new ListView<GitHubEvent>()
         centerLayoutController.textArea = new TextArea()
-        centerLayoutController.metaClass.initializeHiddenStage = {}
+        centerLayoutController.desktopNotifier = Mock(DesktopNotifier)
 
         when:
         centerLayoutController.initialize()
@@ -206,6 +195,7 @@ class CenterLayoutControllerTest extends Specification {
         then:
         listView.getItems() == observableList
         !centerLayoutController.textArea.isEditable()
+        1 * centerLayoutController.desktopNotifier.initializeHiddenStage()
     }
 
     def "failure handler sets error message"() {
@@ -235,7 +225,7 @@ class CenterLayoutControllerTest extends Specification {
     def "success handler parses single push event"() {
         setup:
         centerLayoutController.rootLayoutController = Mock(RootLayoutController)
-        centerLayoutController.metaClass.notifyEvent = { GitHubEvent event -> return }
+        centerLayoutController.desktopNotifier = Mock(DesktopNotifier)
         centerLayoutController.observableList = FXCollections.<GitHubEvent>observableArrayList()
         centerLayoutController.listView = new ListView<>(centerLayoutController.observableList)
 
@@ -251,5 +241,12 @@ class CenterLayoutControllerTest extends Specification {
             event.created_at == "2015-02-01T01:02:03Z"
             !event.json.isEmpty()
         }
+        1 * centerLayoutController.desktopNotifier.send({ GitHubEvent event ->
+            event.id == "2671420212"
+            event.type == "PushEvent"
+            event.login == "SomeUser"
+            event.created_at == "2015-02-01T01:02:03Z"
+            !event.json.isEmpty()
+        })
     }
 }

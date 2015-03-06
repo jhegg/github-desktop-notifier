@@ -24,11 +24,21 @@ class DesktopNotifier {
     }
 
     void sendLibNotifyMessage(GitHubEvent event) {
-        def command = "${notifySendPath} \"${event.type ?: "Unknown event"}\" \"${getNotificationText(event)}\""
-        def process = command.execute()
-        process.consumeProcessOutput()
+        def title = event.type ?: "Unknown event"
+        def message = getNotificationText(event)
+        def commandAndArguments = [notifySendPath, title, message]
+
+        // todo background thread
+        def process = commandAndArguments.execute()
+        def out = new StringBuffer()
+        def err = new StringBuffer()
+        process.waitForProcessOutput(out, err)
+        println "LibNotify command: $commandAndArguments"
+        println "LibNotify stdout: $out"
+        println "LibNotify stderr: $err"
         if (process.exitValue() != 0) {
-            throw new RuntimeException("Attempting to run the following command resulted in an error:  ${command}")
+            // todo this is ugly, consider making the error better
+            throw new RuntimeException("Attempting to run the following command resulted in an error:  $commandAndArguments")
         }
     }
 

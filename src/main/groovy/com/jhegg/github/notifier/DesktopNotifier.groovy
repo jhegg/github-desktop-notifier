@@ -16,16 +16,16 @@ class DesktopNotifier {
     Stage hiddenStage
 
     void send(GitHubEvent event) {
+        def title = event.type ?: "Unknown event"
+        def message = getNotificationText(event)
         if (isPlatformLinux && hasLibNotify()) {
-            sendLibNotifyMessage(event)
+            sendLibNotifyMessage(title, message)
         } else {
-            sendJavaFxMessage(event)
+            sendJavaFxMessage(title, message)
         }
     }
 
-    void sendLibNotifyMessage(GitHubEvent event) {
-        def title = event.type ?: "Unknown event"
-        def message = getNotificationText(event)
+    void sendLibNotifyMessage(String title, String message) {
         def commandAndArguments = [notifySendPath, title, message]
 
         // todo background thread
@@ -46,10 +46,10 @@ class DesktopNotifier {
         return new File(notifySendPath).exists()
     }
 
-    void sendJavaFxMessage(GitHubEvent event) {
+    void sendJavaFxMessage(String title, String message) {
         Notifications.create()
-                .title(event.type ?: "Unknown event")
-                .text(getNotificationText(event))
+                .title(title)
+                .text(message)
                 .hideAfter(Duration.seconds(5d))
                 .show()
     }

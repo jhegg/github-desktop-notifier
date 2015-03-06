@@ -22,13 +22,13 @@ class DesktopNotifierTest extends Specification {
         setup:
         boolean sentJavaFxMessage = false
         boolean sentLibNotifyMessage = false
-        desktopNotifier.metaClass.sendJavaFxMessage = { GitHubEvent event -> sentJavaFxMessage = true }
-        desktopNotifier.metaClass.sendLibNotifyMessage = { GitHubEvent event -> sentLibNotifyMessage = true }
+        desktopNotifier.metaClass.sendJavaFxMessage = { String title, String message -> sentJavaFxMessage = true }
+        desktopNotifier.metaClass.sendLibNotifyMessage = { String title, String message -> sentLibNotifyMessage = true }
         desktopNotifier.metaClass.hasLibNotify = { return hasLibNotify }
         desktopNotifier.isPlatformLinux = isPlatformLinux
 
         when:
-        desktopNotifier.send(new GitHubEvent(id: 1))
+        desktopNotifier.send(new GitHubEvent(id: 1, json: GitHubJsonPayloadExamples.exampleCreateEventJson))
 
         then:
         sentJavaFxMessage == wasJavaFxMessageSent

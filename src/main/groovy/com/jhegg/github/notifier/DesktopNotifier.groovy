@@ -11,6 +11,7 @@ import org.controlsfx.control.Notifications
 
 class DesktopNotifier {
     static final String notifySendPath = '/usr/bin/notify-send'
+
     boolean isPlatformLinux = SystemUtils.IS_OS_LINUX
 
     Stage hiddenStage
@@ -27,19 +28,10 @@ class DesktopNotifier {
 
     void sendLibNotifyMessage(String title, String message) {
         def commandAndArguments = [notifySendPath, title, message]
-
-        // todo background thread
-        def process = commandAndArguments.execute()
-        def out = new StringBuffer()
-        def err = new StringBuffer()
-        process.waitForProcessOutput(out, err)
-        println "LibNotify command: $commandAndArguments"
-        println "LibNotify stdout: $out"
-        println "LibNotify stderr: $err"
-        if (process.exitValue() != 0) {
-            // todo this is ugly, consider making the error better
-            throw new RuntimeException("Attempting to run the following command resulted in an error:  $commandAndArguments")
-        }
+        def libNotifyTask = new LibNotifyTask(commandAndArguments)
+        Thread thread = new Thread(libNotifyTask)
+        thread.setDaemon(true)
+        thread.start()
     }
 
     boolean hasLibNotify() {

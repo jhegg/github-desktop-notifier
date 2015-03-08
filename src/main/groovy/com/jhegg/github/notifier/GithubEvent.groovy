@@ -31,6 +31,8 @@ class GitHubEvent implements Comparable {
                 return [title: "GitHub Push Event", message: parsePushMessage(parsedJson)]
             case "CreateEvent":
                 return [title: parseCreateTitle(parsedJson), message: parseCreateMessage(parsedJson)]
+            case "ForkEvent":
+                return [title: "GitHub Repo Forked", message: parseForkMessage(parsedJson)]
             default:
                 def loginName = parsedJson.actor.login
                 def repoName = parsedJson.repo.name
@@ -59,5 +61,9 @@ class GitHubEvent implements Comparable {
             default:
                 return "$parsedJson.actor.login created $createdObject $ref in $parsedJson.repo.name"
         }
+    }
+
+    private def parseForkMessage(def parsedJson) {
+        return "$parsedJson.actor.login forked $parsedJson.repo.name into ${parsedJson.payload.forkee.full_name}"
     }
 }

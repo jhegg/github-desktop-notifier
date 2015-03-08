@@ -66,7 +66,7 @@ class GitHubEventTest extends Specification {
 
     static def forkEventExample = [
             title: "GitHub Repo Forked",
-            message: "Forkuser forked OriginalOrg/repo-name into NewOrg/repo-name",
+            message: "ForkUser forked OriginalOrg/repo-name into NewOrg/repo-name",
     ]
 
     static def unknownEventExample = [

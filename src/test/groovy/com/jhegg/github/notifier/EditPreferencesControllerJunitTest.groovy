@@ -2,6 +2,7 @@ package com.jhegg.github.notifier
 
 import de.saxsys.javafx.test.JfxRunner
 import de.saxsys.javafx.test.TestInJfxThread
+import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
@@ -20,12 +21,16 @@ public class EditPreferencesControllerJunitTest {
         App app = new App()
         app.token = "12345"
         app.userName = "josh"
+        app.gitHubEnterpriseHostname = "localhost"
+        app.useTrayIcon = false
 
         Pane pane = new Pane()
 
         EditPreferencesController editPreferencesController = new EditPreferencesController()
         editPreferencesController.token = new TextField()
         editPreferencesController.userName = new TextField()
+        editPreferencesController.gitHubEnterpriseHostname = new TextField()
+        editPreferencesController.systemTrayIcon = new CheckBox()
 
         app.primaryStage = new Stage()
 
@@ -33,6 +38,8 @@ public class EditPreferencesControllerJunitTest {
 
         assertEquals("12345", editPreferencesController.token.getText())
         assertEquals("josh", editPreferencesController.userName.getText())
+        assertEquals("localhost", editPreferencesController.gitHubEnterpriseHostname.getText())
+        assertFalse(editPreferencesController.systemTrayIcon.selected)
     }
 
     @Test

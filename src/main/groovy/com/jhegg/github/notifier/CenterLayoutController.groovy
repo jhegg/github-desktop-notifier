@@ -30,6 +30,8 @@ class CenterLayoutController {
 
     DesktopNotifier desktopNotifier = new DesktopNotifier()
 
+    def pleaseSetUserNameMessage = "Please click on Edit->Preferences and set a GitHub User Name."
+
     @SuppressWarnings("GroovyUnusedDeclaration")
     @FXML
     void initialize() {
@@ -56,7 +58,7 @@ class CenterLayoutController {
         if (app.userName) {
             gitHubService.start()
         } else {
-            textArea.setText("Please click on Edit->Preferences and set a GitHub User Name.")
+            textArea.setText(pleaseSetUserNameMessage)
         }
     }
 
@@ -124,6 +126,8 @@ class CenterLayoutController {
         if (app.userName) {
             textArea.setText("Loading...")
             gitHubService.restart() // todo This is not an ideal usage for proper error handling
+        } else {
+            textArea.setText(pleaseSetUserNameMessage)
         }
     }
 

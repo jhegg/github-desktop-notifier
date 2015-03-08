@@ -1,6 +1,7 @@
 package com.jhegg.github.notifier
 
 import javafx.embed.swing.JFXPanel
+import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -16,6 +17,8 @@ class EditPreferencesControllerTest extends Specification {
     EditPreferencesController controller = new EditPreferencesController()
     TextField token = new TextField()
     TextField userName = new TextField()
+    TextField gitHubEnterpriseHostname = new TextField()
+    CheckBox systemTrayIcon = new CheckBox()
     @Shared KeyEvent enterKey = new KeyEvent(KeyEvent.KEY_PRESSED, "enter", "enter", KeyCode.ENTER, false, false, false, false)
     @Shared KeyEvent escapeKey = new KeyEvent(KeyEvent.KEY_PRESSED, "enter", "enter", KeyCode.ESCAPE, false, false, false, false)
     @Shared KeyEvent spaceKey = new KeyEvent(KeyEvent.KEY_PRESSED, "enter", "enter", KeyCode.SPACE, false, false, false, false)
@@ -28,6 +31,8 @@ class EditPreferencesControllerTest extends Specification {
         userName.setText('josh')
         controller.token = token
         controller.userName = userName
+        controller.gitHubEnterpriseHostname = gitHubEnterpriseHostname
+        controller.systemTrayIcon = systemTrayIcon
         controller.initialize()
         controller.metaClass.wasCloseDialogCalled = false
         controller.metaClass.closeDialog = { wasCloseDialogCalled = true }
@@ -47,16 +52,56 @@ class EditPreferencesControllerTest extends Specification {
         spaceKey | false | false || [userName: '']
     }
 
+    @Unroll
+    def "clicked ok with user=#testUser, token=#testToken, hostname=#testHostname, icon=#testIcon"() {
+        setup:
+        controller.app = app
+        controller.token = token
+        token.setText(testToken)
+        controller.userName = userName
+        userName.setText(testUser)
+        controller.gitHubEnterpriseHostname = gitHubEnterpriseHostname
+        gitHubEnterpriseHostname.setText(testHostname)
+        controller.systemTrayIcon = systemTrayIcon
+        systemTrayIcon.selected = testIcon
+        app.useTrayIcon = appTrayIcon
+        boolean trayIconToggled = false
+        app.metaClass.toggleTrayIcon = { trayIconToggled = true }
+        controller.metaClass.closeDialog = {}
+
+        when:
+        controller.clickedOk()
+
+        then:
+        app.userName == testUser
+        app.token == testToken
+        app.gitHubEnterpriseHostname == testHostname
+        trayIconToggled == wasTrayIconToggled
+
+        where:
+        testUser | testToken | testHostname | testIcon | appTrayIcon | wasTrayIconToggled
+        '' | '' | '' | false | false | false
+        'josh' | '' | '' | false | false | false
+        'josh' | '12345' | '' | false | false | false
+        'josh' | '12345' | 'localhost' | false | false | false
+        'josh' | '12345' | 'localhost' | true | false | true
+        'josh' | '12345' | 'localhost' | false | true | true
+    }
+
     def "setDisplayedPreferences updates fields"() {
         setup:
         controller.token = token
         controller.userName = userName
+        controller.gitHubEnterpriseHostname = gitHubEnterpriseHostname
+        controller.systemTrayIcon = systemTrayIcon
 
         when:
-        controller.setDisplayedPreferences("12345", "someUser")
+        controller.setDisplayedPreferences("12345", "someUser", "localhost", false)
 
         then:
         token.getText() == "12345"
         userName.getText() == "someUser"
+        gitHubEnterpriseHostname.getText() == "localhost"
+        !systemTrayIcon.selected
     }
 }

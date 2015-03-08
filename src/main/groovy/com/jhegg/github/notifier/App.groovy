@@ -97,6 +97,8 @@ class App extends Application {
 
     void configurePrimaryStage() {
         primaryStage.title = "GitHub Desktop Notifier"
+        primaryStage.getIcons().add(new javafx.scene.image.Image(
+                getClass().getResourceAsStream("/github-notifier-black-background-256.png")))
         buildScene()
         configureControllers()
         enforceMinimumWindowSize()

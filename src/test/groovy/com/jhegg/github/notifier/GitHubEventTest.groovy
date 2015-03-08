@@ -2,6 +2,9 @@ package com.jhegg.github.notifier
 
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.lang.Unroll
+
+import static com.jhegg.github.notifier.GitHubJsonPayloadExamples.*
 
 class GitHubEventTest extends Specification {
     @Shared def event = new GitHubEvent(id: 1)
@@ -28,4 +31,46 @@ class GitHubEventTest extends Specification {
         event != eventTwo
         eventTwo != event
     }
+
+    @Unroll
+    def "title and message for type: #type"() {
+        given:
+        GitHubEvent theEvent = new GitHubEvent(type: type, login: "login", created_at: "now", json: json)
+
+        expect:
+        theEvent.parse() == [title: exampleEvent.title, message: exampleEvent.message]
+
+        where:
+        type | json || exampleEvent
+        "PushEvent" | exampleSinglePushPayload || pushEventExample
+        "CreateEvent" | exampleCreateRepoEventJson || createRepoEventExample
+        "CreateEvent" | exampleCreateBranchEventJson || createBranchEventExample
+        "ForkEvent" | exampleForkEventJson || forkEventExample
+        "UnknownEvent" | exampleUnknownEventJson || unknownEventExample
+    }
+
+    static def pushEventExample = [
+            title: "GitHub Push Event",
+            message: "SomeUser pushed 1 commit to refs/heads/master in SomeOrg/i-made-this",
+    ]
+
+    static def createRepoEventExample = [
+            title: "GitHub Repository Created",
+            message: "CreatorUser created repository SomeOrg/some-new-repo",
+    ]
+
+    static def createBranchEventExample = [
+            title: "GitHub Branch Created",
+            message: "CreatorUser created branch toggle-system-tray-icon in SomeOrg/some-existing-repo",
+    ]
+
+    static def forkEventExample = [
+            title: "GitHub Repo Forked",
+            message: "Forkuser forked OriginalOrg/repo-name into NewOrg/repo-name",
+    ]
+
+    static def unknownEventExample = [
+            title: "UnknownEvent",
+            message: "username acted on repo username/reponame",
+    ]
 }

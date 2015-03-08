@@ -74,11 +74,12 @@ class CenterLayoutControllerTest extends Specification {
 
         then:
         times * gitHubService.restart()
+        centerLayoutController.textArea.getText() == text
 
         where:
-        userName || times
-        GString.EMPTY || 0
-        "josh" || 1
+        userName || times | text
+        GString.EMPTY || 0 | "Please click on Edit->Preferences and set a GitHub User Name."
+        "josh" || 1 | "Loading..."
     }
 
     @Unroll

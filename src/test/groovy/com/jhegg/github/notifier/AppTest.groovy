@@ -61,6 +61,7 @@ class AppTest extends Specification {
             println "Overridding #buildTrayIcon"
             return trayIcon
         }
+        app.metaClass.addStageListeners = {}
 
         when:
         app.addAppToTray()

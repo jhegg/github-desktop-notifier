@@ -2,11 +2,15 @@ package com.jhegg.github.notifier
 
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
+import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
+import javafx.stage.WindowEvent
 import org.apache.commons.lang.SystemUtils
 
 import javax.imageio.ImageIO
@@ -21,6 +25,7 @@ class App extends Application {
     static final String gitHubUrlSuffixWithPlaceholder = "users/%s/received_events"
     String userName = GString.EMPTY
     String token = GString.EMPTY
+    boolean useTrayIcon = true
 
     protected Stage primaryStage
     protected CenterLayoutController centerLayoutController
@@ -53,8 +58,9 @@ class App extends Application {
         this.primaryStage = primaryStage
         configurePrimaryStage()
         primaryStage.show()
-        Platform.setImplicitExit(false)
-        Platform.runLater { addAppToTray() }
+        if (useTrayIcon) {
+            Platform.runLater { addAppToTray() }
+        }
     }
 
     def parseArguments(List<String> arguments) {
@@ -131,7 +137,8 @@ class App extends Application {
     void addAppToTray()  {
         SystemTray tray = getSystemTray()
         trayIcon = buildTrayIcon()
-        trayIcon.addActionListener({ Platform.runLater {this.showStage()}} as ActionListener)
+        trayIcon.addActionListener({ Platform.runLater { this.showStage() } } as ActionListener)
+        addStageListeners()
 
         MenuItem exitItem = new MenuItem("Exit")
         exitItem.addActionListener({exitApp()} as ActionListener)
@@ -146,6 +153,18 @@ class App extends Application {
         } catch (AWTException e) {
             e.printStackTrace()
         }
+    }
+
+    private void addStageListeners() {
+        def minimizeWindowChangeListener = [
+                changed: { ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ->
+                    if (trayIcon && newValue) {
+                        primaryStage.hide()
+                    }
+                }] as ChangeListener<Boolean>
+        primaryStage.iconifiedProperty().addListener(minimizeWindowChangeListener)
+
+        primaryStage.setOnCloseRequest([handle: { WindowEvent event -> stop() }] as EventHandler<WindowEvent>)
     }
 
     private TrayIcon buildTrayIcon() {
@@ -174,8 +193,19 @@ class App extends Application {
 
     void showStage() {
         if (primaryStage) {
+            primaryStage.setIconified(false)
             primaryStage.show()
             primaryStage.toFront()
+        }
+    }
+
+    void removeAppFromTray() {
+        if (trayIcon) {
+            Platform.runLater {
+                SystemTray tray = getSystemTray()
+                tray.remove(trayIcon)
+                trayIcon = null
+            }
         }
     }
 }

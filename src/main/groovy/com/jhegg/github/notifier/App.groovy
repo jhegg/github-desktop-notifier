@@ -59,6 +59,7 @@ class App extends Application {
         configurePrimaryStage()
         primaryStage.show()
         if (useTrayIcon) {
+            Platform.setImplicitExit(false)
             Platform.runLater { addAppToTray() }
         }
     }

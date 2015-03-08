@@ -3,6 +3,7 @@ package com.jhegg.github.notifier
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.Scene
+import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -13,11 +14,20 @@ import javafx.stage.Stage
 class EditPreferencesController {
     @FXML
     TextField token
+
     @FXML
     TextField userName
 
+    @FXML
+    TextField gitHubEnterpriseHostname
+
+    @FXML
+    CheckBox systemTrayIcon
+
     App app
+
     Stage dialogStage
+
     boolean wasOkClicked
 
     @SuppressWarnings("GroovyUnusedDeclaration")
@@ -27,7 +37,7 @@ class EditPreferencesController {
     }
 
     private Iterable<TextField> pressingEnterKeyClicksOk() {
-        [token, userName].each {
+        [token, userName, gitHubEnterpriseHostname, systemTrayIcon].each {
             it.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 @Override
                 void handle(KeyEvent event) {
@@ -44,6 +54,7 @@ class EditPreferencesController {
     void clickedOk() {
         app.userName = userName.getText()
         app.token = token.getText()
+        app.gitHubEnterpriseHostname = gitHubEnterpriseHostname.getText()
         wasOkClicked = true
         closeDialog()
     }

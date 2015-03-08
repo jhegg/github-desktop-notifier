@@ -32,9 +32,14 @@ class App extends Application {
     }
 
     void exitApp() {
-        SystemTray tray = SystemTray.getSystemTray();
         Platform.exit()
-        tray.remove(trayIcon)
+        /**
+         * Force an exit to ignore benign error messages on Mac. Normally we would just unload the tray icon to get
+         * AWT to exit, but on Mac that deadlocks the JavaFX and AWT threads. Using EventQueue#invokeLater to prevent
+         * the deadlock causes some harmless error messages to show up during the exit, but they're annoying. So, we
+         * just shut it all down, instead.
+         */
+        System.exit(0)
     }
 
     @Override

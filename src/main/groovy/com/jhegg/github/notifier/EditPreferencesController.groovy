@@ -70,6 +70,7 @@ class EditPreferencesController {
         dialogStage.setTitle("Edit Preferences")
         dialogStage.initModality(Modality.WINDOW_MODAL)
         dialogStage.initOwner(app.primaryStage)
+        dialogStage.setResizable(false)
         dialogStage.setScene(new Scene(pane))
     }
 

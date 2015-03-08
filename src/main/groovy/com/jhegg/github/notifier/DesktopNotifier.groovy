@@ -1,6 +1,5 @@
 package com.jhegg.github.notifier
 
-import groovy.json.JsonSlurper
 import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.stage.Stage
@@ -17,12 +16,11 @@ class DesktopNotifier {
     Stage hiddenStage
 
     void send(GitHubEvent event) {
-        def title = event.type ?: "Unknown event"
-        def message = getNotificationText(event)
+        def parsedEvent = event.parse()
         if (isPlatformLinux && hasLibNotify()) {
-            sendLibNotifyMessage(title, message)
+            sendLibNotifyMessage(parsedEvent.title, parsedEvent.message)
         } else {
-            sendJavaFxMessage(title, message)
+            sendJavaFxMessage(parsedEvent.title, parsedEvent.message)
         }
     }
 
@@ -44,18 +42,6 @@ class DesktopNotifier {
                 .text(message)
                 .hideAfter(Duration.seconds(5d))
                 .show()
-    }
-
-    String getNotificationText(GitHubEvent gitHubEvent) {
-        def json = new JsonSlurper().parseText(gitHubEvent.json)
-
-        if (gitHubEvent.type == "PushEvent") {
-            String truncatedMessage = json.payload.commits[0].message.tokenize('\n\r').get(0)
-            return "${gitHubEvent.login} pushed ${json.payload.size} commit(s) to repo ${json.repo.name}\n\n" +
-                    "\"${truncatedMessage.take(85)} ...\""
-        } else {
-            "${gitHubEvent.login} acted on repo ${json.repo.name}"
-        }
     }
 
     /**

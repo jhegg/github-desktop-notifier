@@ -97,8 +97,15 @@ class CenterLayoutController {
     }
 
     void displayTextArea(GitHubEvent event) {
-        if (event != null )
-            textArea.setText(JsonOutput.prettyPrint(event.json))
+        if (event != null ) {
+            def parsedEvent = event.parse()
+            String displayedText = "Title: $parsedEvent.title\n\n" +
+                    "Message: $parsedEvent.message\n\n" +
+                    "Raw JSON: ${JsonOutput.prettyPrint(event.json)}"
+            textArea.setText(displayedText)
+        } else {
+            textArea.setText("")
+        }
     }
 
     void updateEvents(List<GitHubEvent> githubEvents) {

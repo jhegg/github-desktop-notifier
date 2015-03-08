@@ -58,6 +58,7 @@ class App extends Application {
         this.primaryStage = primaryStage
         configurePrimaryStage()
         primaryStage.show()
+        primaryStage.setOnCloseRequest([handle: { WindowEvent event -> stop() }] as EventHandler<WindowEvent>)
         if (useTrayIcon) {
             Platform.setImplicitExit(false)
             Platform.runLater { addAppToTray() }
@@ -156,17 +157,16 @@ class App extends Application {
         }
     }
 
-    private void addStageListeners() {
-        def minimizeWindowChangeListener = [
-                changed: { ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ->
-                    if (trayIcon && newValue) {
-                        primaryStage.hide()
-                    }
-                }] as ChangeListener<Boolean>
+    void addStageListeners() {
         primaryStage.iconifiedProperty().addListener(minimizeWindowChangeListener)
-
-        primaryStage.setOnCloseRequest([handle: { WindowEvent event -> stop() }] as EventHandler<WindowEvent>)
     }
+
+    def minimizeWindowChangeListener = [
+            changed: { ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue ->
+                if (trayIcon && newValue) {
+                    primaryStage.hide()
+                }
+            }] as ChangeListener<Boolean>
 
     private TrayIcon buildTrayIcon() {
         new TrayIcon(ImageIO.read(this.getClass().getResource(getIconResourcePath())))
@@ -202,11 +202,22 @@ class App extends Application {
 
     void removeAppFromTray() {
         if (trayIcon) {
+            primaryStage.iconifiedProperty().removeListener(minimizeWindowChangeListener)
             Platform.runLater {
                 SystemTray tray = getSystemTray()
                 tray.remove(trayIcon)
                 trayIcon = null
             }
+        }
+    }
+
+    void toggleTrayIcon() {
+        if (useTrayIcon) {
+            useTrayIcon = false
+            removeAppFromTray()
+        } else {
+            useTrayIcon = true
+            addAppToTray()
         }
     }
 }

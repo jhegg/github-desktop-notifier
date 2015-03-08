@@ -55,6 +55,9 @@ class EditPreferencesController {
         app.userName = userName.getText()
         app.token = token.getText()
         app.gitHubEnterpriseHostname = gitHubEnterpriseHostname.getText()
+        if (systemTrayIcon.selected != app.useTrayIcon) {
+            app.toggleTrayIcon()
+        }
         wasOkClicked = true
         closeDialog()
     }
@@ -65,15 +68,17 @@ class EditPreferencesController {
         closeDialog()
     }
 
-    void setDisplayedPreferences(String token, String userName) {
+    void setDisplayedPreferences(String token, String userName, String hostname, boolean useTrayIcon) {
         this.token.setText(token)
         this.userName.setText(userName)
+        this.gitHubEnterpriseHostname.setText(hostname)
+        this.systemTrayIcon.selected = useTrayIcon
     }
 
     void configure(App app, Pane pane) {
         this.app = app
         buildDialogStage(pane)
-        setDisplayedPreferences(app.token, app.userName)
+        setDisplayedPreferences(app.token, app.userName, app.gitHubEnterpriseHostname, app.useTrayIcon)
     }
 
     private void buildDialogStage(Pane pane) {
@@ -86,7 +91,7 @@ class EditPreferencesController {
     }
 
     void showDialog() {
-        setDisplayedPreferences(app.token, app.userName)
+        setDisplayedPreferences(app.token, app.userName, app.gitHubEnterpriseHostname, app.useTrayIcon)
         dialogStage.showAndWait()
     }
 

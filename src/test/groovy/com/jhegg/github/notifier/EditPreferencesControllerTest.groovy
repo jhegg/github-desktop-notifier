@@ -64,6 +64,9 @@ class EditPreferencesControllerTest extends Specification {
         gitHubEnterpriseHostname.setText(testHostname)
         controller.systemTrayIcon = systemTrayIcon
         systemTrayIcon.selected = testIcon
+        app.useTrayIcon = appTrayIcon
+        boolean trayIconToggled = false
+        app.metaClass.toggleTrayIcon = { trayIconToggled = true }
         controller.metaClass.closeDialog = {}
 
         when:
@@ -73,27 +76,32 @@ class EditPreferencesControllerTest extends Specification {
         app.userName == testUser
         app.token == testToken
         app.gitHubEnterpriseHostname == testHostname
-        // todo app.systemTrayIconEnabled == testIcon
+        trayIconToggled == wasTrayIconToggled
 
         where:
-        testUser | testToken | testHostname | testIcon
-        '' | '' | '' | false
-        'josh' | '' | '' | false
-        'josh' | '12345' | '' | false
-        'josh' | '12345' | 'localhost' | false
-        'josh' | '12345' | 'localhost' | true
+        testUser | testToken | testHostname | testIcon | appTrayIcon | wasTrayIconToggled
+        '' | '' | '' | false | false | false
+        'josh' | '' | '' | false | false | false
+        'josh' | '12345' | '' | false | false | false
+        'josh' | '12345' | 'localhost' | false | false | false
+        'josh' | '12345' | 'localhost' | true | false | true
+        'josh' | '12345' | 'localhost' | false | true | true
     }
 
     def "setDisplayedPreferences updates fields"() {
         setup:
         controller.token = token
         controller.userName = userName
+        controller.gitHubEnterpriseHostname = gitHubEnterpriseHostname
+        controller.systemTrayIcon = systemTrayIcon
 
         when:
-        controller.setDisplayedPreferences("12345", "someUser")
+        controller.setDisplayedPreferences("12345", "someUser", "localhost", false)
 
         then:
         token.getText() == "12345"
         userName.getText() == "someUser"
+        gitHubEnterpriseHostname.getText() == "localhost"
+        !systemTrayIcon.selected
     }
 }

@@ -70,4 +70,27 @@ class AppTest extends Specification {
         1 * tray.add(_ as TrayIcon)
         1 * trayIcon.setImageAutoSize(true)
     }
+
+    @Unroll
+    def "toggleTrayIcon when useTrayIcon=#useTrayIcon"() {
+        given:
+        app.useTrayIcon = useTrayIcon
+        boolean removed = false
+        boolean added = false
+        app.metaClass.removeAppFromTray = { removed = true }
+        app.metaClass.addAppToTray = { added = true }
+
+        when:
+        app.toggleTrayIcon()
+
+        then:
+        app.useTrayIcon != useTrayIcon
+        removed == wasRemoveCalled
+        added == wasAddCalled
+
+        where:
+        useTrayIcon | wasRemoveCalled | wasAddCalled
+        false | false | true
+        true | true | false
+    }
 }

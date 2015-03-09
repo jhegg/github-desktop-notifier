@@ -10,6 +10,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static com.jhegg.github.notifier.GitHubJsonPayloadExamples.getExampleSinglePushPayload
+
 class CenterLayoutControllerTest extends Specification {
     static {
         new JFXPanel() // we need the JavaFX Toolkit to be initialized, or an IllegalStateException is thrown.
@@ -116,8 +118,12 @@ class CenterLayoutControllerTest extends Specification {
         where:
         event || result
         null || GString.EMPTY
-        new GitHubEvent(id: "123", login: "josh", created_at: "now", json: "{\"id\": \"123\"}") || "{\n    \"id\": \"123\"\n}"
+        new GitHubEvent(id: "123", login: "josh", created_at: "now", json: exampleSinglePushPayload) || pushEventExample
     }
+
+    static def pushEventExample = "Title: GitHub Push Event\n\n" +
+            "Message: SomeUser pushed 1 commit to refs/heads/master in SomeOrg/i-made-this\n\n" +
+            "Raw JSON: ${exampleSinglePushPayload}"
 
     @Unroll
     def "getNewEventsForNotification with #existing.size() oldEvents and #input.size() new, expected #output.size() result(s)"() {

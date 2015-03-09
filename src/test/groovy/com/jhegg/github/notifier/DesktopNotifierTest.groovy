@@ -3,19 +3,10 @@ package com.jhegg.github.notifier
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static com.jhegg.github.notifier.GitHubJsonPayloadExamples.*
+
 class DesktopNotifierTest extends Specification {
     DesktopNotifier desktopNotifier = new DesktopNotifier()
-
-    @Unroll
-    def "getNotificationText for type #type and login #login"() {
-        expect:
-        desktopNotifier.getNotificationText(new GitHubEvent(type: type, login: login, json: json)) == result
-
-        where:
-        type          | login          | json                                               || result
-        "PushEvent"   | "SomeUser"     | GitHubJsonPayloadExamples.exampleSinglePushPayload || "SomeUser pushed 1 commit(s) to repo SomeOrg/i-made-this\n\n\"I made this thing ...\""
-        "CreateEvent" | "creatorLogin" | GitHubJsonPayloadExamples.exampleCreateEventJson   || "creatorLogin acted on repo SomeOrg/some-new-repo"
-    }
 
     @Unroll
     def "send event where isPlatformLinux==#isPlatformLinux and hasLibNotify==#hasLibNotify"() {
@@ -28,7 +19,7 @@ class DesktopNotifierTest extends Specification {
         desktopNotifier.isPlatformLinux = isPlatformLinux
 
         when:
-        desktopNotifier.send(new GitHubEvent(id: 1, json: GitHubJsonPayloadExamples.exampleCreateEventJson))
+        desktopNotifier.send(new GitHubEvent(id: 1, json: exampleCreateRepoEventJson))
 
         then:
         sentJavaFxMessage == wasJavaFxMessageSent

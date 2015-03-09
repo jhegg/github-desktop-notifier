@@ -48,16 +48,198 @@ class GitHubJsonPayloadExamples {
     "type": "PushEvent"
 }"""
 
-    static String exampleCreateEventJson = """{
+    static String exampleCreateRepoEventJson = """{
     "id": "2671420223",
     "actor": {
         "login": "CreatorUser",
         "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "description": "",
+        "master_branch": "master",
+        "pusher_type": "user",
+        "ref": null,
+        "ref_type": "repository"
     },
     "created_at": "2015-02-02T01:15:07Z",
     "repo": {
         "name": "SomeOrg/some-new-repo",
     },
     "type": "CreateEvent"
+}"""
+
+    static String exampleCreateBranchEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "CreatorUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "description": "",
+        "master_branch": "master",
+        "pusher_type": "user",
+        "ref": "toggle-system-tray-icon",
+        "ref_type": "branch"
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/some-existing-repo",
+    },
+    "type": "CreateEvent"
+}"""
+
+    static String exampleForkEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "ForkUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "forkee": {
+            "full_name": "NewOrg/repo-name",
+        },
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "public": true,
+    "repo": {
+        "name": "OriginalOrg/repo-name",
+    },
+    "type": "ForkEvent"
+}"""
+
+    static String exampleIssuesEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "opened",
+        "issue": {
+            "assignee": null,
+            "body": "The reason this is an issue is because x, y, and z.",
+            "number": 1,
+            "title": "This is an issue",
+        }
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "IssuesEvent"
+}"""
+
+    static String exampleIssueCommentEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "created",
+        "issue": {
+            "assignee": null,
+            "body": "The reason this is an issue is because x, y, and z.",
+            "number": 1,
+            "title": "This is an issue",
+        },
+        "comment": {
+            "body": "This is my comment",
+        },
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "IssueCommentEvent"
+}"""
+
+    static String exampleWatchEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "started",
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "WatchEvent"
+}"""
+
+    static String exampleGollumEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "pages": [
+            {
+                "page_name": "Home",
+                "title": "Home",
+                "action": "edited",
+            }
+        ],
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "GollumEvent"
+}"""
+
+    static String examplePullRequestEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "opened",
+        "number": 1,
+        "pull_request": {
+        },
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "PullRequestEvent"
+}"""
+
+    static String exampleDeleteEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "ref_type": "branch",
+        "ref": "my-branch",
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "DeleteEvent"
+}"""
+
+    static String exampleUnknownEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "username",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "username/reponame",
+    },
+    "type": "UnknownEvent"
 }"""
 }

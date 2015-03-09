@@ -46,6 +46,8 @@ class GitHubEventTest extends Specification {
         "CreateEvent" | exampleCreateRepoEventJson || createRepoEventExample
         "CreateEvent" | exampleCreateBranchEventJson || createBranchEventExample
         "ForkEvent" | exampleForkEventJson || forkEventExample
+        "IssuesEvent" | exampleIssuesEventJson || issuesEventExample
+        "IssueCommentEvent" | exampleIssueCommentEventJson || issueCommentEventExample
         "UnknownEvent" | exampleUnknownEventJson || unknownEventExample
     }
 
@@ -67,6 +69,16 @@ class GitHubEventTest extends Specification {
     static def forkEventExample = [
             title: "GitHub Repo Forked",
             message: "ForkUser forked OriginalOrg/repo-name into NewOrg/repo-name",
+    ]
+
+    static def issuesEventExample = [
+            title: "GitHub Issue Opened",
+            message: "SomeUser opened issue #1 on SomeOrg/repo-name",
+    ]
+
+    static def issueCommentEventExample = [
+            title: "GitHub Issue Comment",
+            message: "SomeUser commented on issue #1 on SomeOrg/repo-name",
     ]
 
     static def unknownEventExample = [

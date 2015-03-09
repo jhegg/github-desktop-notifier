@@ -33,6 +33,10 @@ class GitHubEvent implements Comparable {
                 return [title: parseCreateTitle(parsedJson), message: parseCreateMessage(parsedJson)]
             case "ForkEvent":
                 return [title: "GitHub Repo Forked", message: parseForkMessage(parsedJson)]
+            case "IssuesEvent":
+                return [title: parseIssuesTitle(parsedJson), message: parseIssuesMessage(parsedJson)]
+            case "IssueCommentEvent":
+                return [title: "GitHub Issue Comment", message: parseIssueCommentMessage(parsedJson)]
             default:
                 def loginName = parsedJson.actor.login
                 def repoName = parsedJson.repo.name
@@ -65,5 +69,21 @@ class GitHubEvent implements Comparable {
 
     private def parseForkMessage(def parsedJson) {
         return "$parsedJson.actor.login forked $parsedJson.repo.name into ${parsedJson.payload.forkee.full_name}"
+    }
+
+    private def parseIssuesTitle(def parsedJson) {
+        return "GitHub Issue ${parsedJson.payload.action.capitalize()}"
+    }
+
+    private def parseIssuesMessage(def parsedJson) {
+        String action = parsedJson.payload.action
+        switch (action) {
+            default:
+                return "$parsedJson.actor.login $action issue #$parsedJson.payload.issue.number on $parsedJson.repo.name"
+        }
+    }
+
+    private def parseIssueCommentMessage(def parsedJson) {
+        return "$parsedJson.actor.login commented on issue #$parsedJson.payload.issue.number on $parsedJson.repo.name"
     }
 }

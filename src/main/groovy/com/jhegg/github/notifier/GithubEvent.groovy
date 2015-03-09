@@ -29,6 +29,8 @@ class GitHubEvent implements Comparable {
         switch (parsedJson.type) {
             case "CreateEvent":
                 return [title: parseCreateTitle(parsedJson), message: parseCreateMessage(parsedJson)]
+            case "DeleteEvent":
+                return [title: "GitHub Delete Event", message: parseDeleteMessage(parsedJson)]
             case "ForkEvent":
                 return [title: "GitHub Repo Forked", message: parseForkMessage(parsedJson)]
             case "GollumEvent":
@@ -37,6 +39,8 @@ class GitHubEvent implements Comparable {
                 return [title: parseIssuesTitle(parsedJson), message: parseIssuesMessage(parsedJson)]
             case "IssueCommentEvent":
                 return [title: "GitHub Issue Comment", message: parseIssueCommentMessage(parsedJson)]
+            case "PullRequestEvent":
+                return [title: "GitHub Pull Request", message: parsePullRequestMessage(parsedJson)]
             case "PushEvent":
                 return [title: "GitHub Push Event", message: parsePushMessage(parsedJson)]
             case "WatchEvent":
@@ -94,5 +98,15 @@ class GitHubEvent implements Comparable {
 
     private def parseGollumMessage(def parsedJson) {
         return "$parsedJson.actor.login updated the wiki for repo $parsedJson.repo.name"
+    }
+
+    private def parsePullRequestMessage(def parsedJson) {
+        return "$parsedJson.actor.login $parsedJson.payload.action pull request #$parsedJson.payload.number " +
+                "on repo $parsedJson.repo.name"
+    }
+
+    private def parseDeleteMessage(def parsedJson) {
+        return "$parsedJson.actor.login deleted $parsedJson.payload.ref_type $parsedJson.payload.ref " +
+                "on repo $parsedJson.repo.name"
     }
 }

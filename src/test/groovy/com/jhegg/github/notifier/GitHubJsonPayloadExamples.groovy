@@ -192,6 +192,42 @@ class GitHubJsonPayloadExamples {
     "type": "GollumEvent"
 }"""
 
+    static String examplePullRequestEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "opened",
+        "number": 1,
+        "pull_request": {
+        },
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "PullRequestEvent"
+}"""
+
+    static String exampleDeleteEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "ref_type": "branch",
+        "ref": "my-branch",
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "DeleteEvent"
+}"""
+
     static String exampleUnknownEventJson = """{
     "id": "2671420223",
     "actor": {

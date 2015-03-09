@@ -44,11 +44,13 @@ class GitHubEventTest extends Specification {
         type | json || exampleEvent
         "CreateEvent" | exampleCreateRepoEventJson || createRepoEventExample
         "CreateEvent" | exampleCreateBranchEventJson || createBranchEventExample
+        "DeleteEvent" | exampleDeleteEventJson || deleteEventExample
         "ForkEvent" | exampleForkEventJson || forkEventExample
         "GollumEvent" | exampleGollumEventJson || gollumEventExample
         "IssuesEvent" | exampleIssuesEventJson || issuesEventExample
         "IssueCommentEvent" | exampleIssueCommentEventJson || issueCommentEventExample
         "PushEvent" | exampleSinglePushPayload || pushEventExample
+        "PullRequestEvent" | examplePullRequestEventJson || pullRequestEventExample
         "WatchEvent" | exampleWatchEventJson || watchEventExample
         "UnknownEvent" | exampleUnknownEventJson || unknownEventExample
     }
@@ -91,6 +93,16 @@ class GitHubEventTest extends Specification {
     static def gollumEventExample = [
             title: "GitHub Wiki",
             message: "SomeUser updated the wiki for repo SomeOrg/repo-name",
+    ]
+
+    static def pullRequestEventExample = [
+            title: "GitHub Pull Request",
+            message: "SomeUser opened pull request #1 on repo SomeOrg/repo-name",
+    ]
+
+    static def deleteEventExample = [
+            title: "GitHub Delete Event",
+            message: "SomeUser deleted branch my-branch on repo SomeOrg/repo-name",
     ]
 
     static def unknownEventExample = [

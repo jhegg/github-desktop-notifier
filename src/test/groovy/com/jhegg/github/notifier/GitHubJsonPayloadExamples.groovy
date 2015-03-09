@@ -170,6 +170,28 @@ class GitHubJsonPayloadExamples {
     "type": "WatchEvent"
 }"""
 
+    static String exampleGollumEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "pages": [
+            {
+                "page_name": "Home",
+                "title": "Home",
+                "action": "edited",
+            }
+        ],
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "GollumEvent"
+}"""
+
     static String exampleUnknownEventJson = """{
     "id": "2671420223",
     "actor": {

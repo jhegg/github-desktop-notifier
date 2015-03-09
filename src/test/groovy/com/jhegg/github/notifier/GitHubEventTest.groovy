@@ -42,12 +42,13 @@ class GitHubEventTest extends Specification {
 
         where:
         type | json || exampleEvent
-        "PushEvent" | exampleSinglePushPayload || pushEventExample
         "CreateEvent" | exampleCreateRepoEventJson || createRepoEventExample
         "CreateEvent" | exampleCreateBranchEventJson || createBranchEventExample
         "ForkEvent" | exampleForkEventJson || forkEventExample
+        "GollumEvent" | exampleGollumEventJson || gollumEventExample
         "IssuesEvent" | exampleIssuesEventJson || issuesEventExample
         "IssueCommentEvent" | exampleIssueCommentEventJson || issueCommentEventExample
+        "PushEvent" | exampleSinglePushPayload || pushEventExample
         "WatchEvent" | exampleWatchEventJson || watchEventExample
         "UnknownEvent" | exampleUnknownEventJson || unknownEventExample
     }
@@ -85,6 +86,11 @@ class GitHubEventTest extends Specification {
     static def watchEventExample = [
             title: "GitHub Repo Starred",
             message: "SomeUser starred SomeOrg/repo-name",
+    ]
+
+    static def gollumEventExample = [
+            title: "GitHub Wiki",
+            message: "SomeUser updated the wiki for repo SomeOrg/repo-name",
     ]
 
     static def unknownEventExample = [

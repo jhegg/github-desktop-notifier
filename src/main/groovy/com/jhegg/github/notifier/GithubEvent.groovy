@@ -27,16 +27,18 @@ class GitHubEvent implements Comparable {
     def parse() {
         def parsedJson = new JsonSlurper().parseText(json)
         switch (parsedJson.type) {
-            case "PushEvent":
-                return [title: "GitHub Push Event", message: parsePushMessage(parsedJson)]
             case "CreateEvent":
                 return [title: parseCreateTitle(parsedJson), message: parseCreateMessage(parsedJson)]
             case "ForkEvent":
                 return [title: "GitHub Repo Forked", message: parseForkMessage(parsedJson)]
+            case "GollumEvent":
+                return [title: "GitHub Wiki", message: parseGollumMessage(parsedJson)]
             case "IssuesEvent":
                 return [title: parseIssuesTitle(parsedJson), message: parseIssuesMessage(parsedJson)]
             case "IssueCommentEvent":
                 return [title: "GitHub Issue Comment", message: parseIssueCommentMessage(parsedJson)]
+            case "PushEvent":
+                return [title: "GitHub Push Event", message: parsePushMessage(parsedJson)]
             case "WatchEvent":
                 return [title: "GitHub Repo Starred", message: parseWatchMessage(parsedJson)]
             default:
@@ -79,10 +81,7 @@ class GitHubEvent implements Comparable {
 
     private def parseIssuesMessage(def parsedJson) {
         String action = parsedJson.payload.action
-        switch (action) {
-            default:
-                return "$parsedJson.actor.login $action issue #$parsedJson.payload.issue.number on $parsedJson.repo.name"
-        }
+        return "$parsedJson.actor.login $action issue #$parsedJson.payload.issue.number on $parsedJson.repo.name"
     }
 
     private def parseIssueCommentMessage(def parsedJson) {
@@ -91,5 +90,9 @@ class GitHubEvent implements Comparable {
 
     private def parseWatchMessage(def parsedJson) {
         return "$parsedJson.actor.login starred $parsedJson.repo.name"
+    }
+
+    private def parseGollumMessage(def parsedJson) {
+        return "$parsedJson.actor.login updated the wiki for repo $parsedJson.repo.name"
     }
 }

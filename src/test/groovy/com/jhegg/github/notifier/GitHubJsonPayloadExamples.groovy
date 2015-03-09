@@ -154,6 +154,22 @@ class GitHubJsonPayloadExamples {
     "type": "IssueCommentEvent"
 }"""
 
+    static String exampleWatchEventJson = """{
+    "id": "2671420223",
+    "actor": {
+        "login": "SomeUser",
+        "avatar_url": "https://avatars.githubusercontent.com/u/123456?",
+    },
+    "payload": {
+        "action": "started",
+    },
+    "created_at": "2015-02-02T01:15:07Z",
+    "repo": {
+        "name": "SomeOrg/repo-name",
+    },
+    "type": "WatchEvent"
+}"""
+
     static String exampleUnknownEventJson = """{
     "id": "2671420223",
     "actor": {

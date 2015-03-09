@@ -48,6 +48,7 @@ class GitHubEventTest extends Specification {
         "ForkEvent" | exampleForkEventJson || forkEventExample
         "IssuesEvent" | exampleIssuesEventJson || issuesEventExample
         "IssueCommentEvent" | exampleIssueCommentEventJson || issueCommentEventExample
+        "WatchEvent" | exampleWatchEventJson || watchEventExample
         "UnknownEvent" | exampleUnknownEventJson || unknownEventExample
     }
 
@@ -79,6 +80,11 @@ class GitHubEventTest extends Specification {
     static def issueCommentEventExample = [
             title: "GitHub Issue Comment",
             message: "SomeUser commented on issue #1 on SomeOrg/repo-name",
+    ]
+
+    static def watchEventExample = [
+            title: "GitHub Repo Starred",
+            message: "SomeUser starred SomeOrg/repo-name",
     ]
 
     static def unknownEventExample = [

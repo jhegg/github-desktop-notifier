@@ -37,6 +37,8 @@ class GitHubEvent implements Comparable {
                 return [title: parseIssuesTitle(parsedJson), message: parseIssuesMessage(parsedJson)]
             case "IssueCommentEvent":
                 return [title: "GitHub Issue Comment", message: parseIssueCommentMessage(parsedJson)]
+            case "WatchEvent":
+                return [title: "GitHub Repo Starred", message: parseWatchMessage(parsedJson)]
             default:
                 def loginName = parsedJson.actor.login
                 def repoName = parsedJson.repo.name
@@ -85,5 +87,9 @@ class GitHubEvent implements Comparable {
 
     private def parseIssueCommentMessage(def parsedJson) {
         return "$parsedJson.actor.login commented on issue #$parsedJson.payload.issue.number on $parsedJson.repo.name"
+    }
+
+    private def parseWatchMessage(def parsedJson) {
+        return "$parsedJson.actor.login starred $parsedJson.repo.name"
     }
 }

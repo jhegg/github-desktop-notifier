@@ -59,3 +59,5 @@ The app is setup to talk to GitHub.com, as long as the username is entered.
 2. Open `GitHub Desktop Notifier`, click on `Edit -> Preferences`, and put in the user name and OAuth token and GitHub Enterprise hostname, then click OK.
   * Or, `./gradlew run -Parguments=-u,jhegg,-t,12345,-n,localhost`
 3. If you get an `SSLPeerUnverifiedException`, then the most likely cause is that the SSL certificate presented by the GitHub Enterprise server is not trusted by the JRE's `cacerts` keystore. The keystore of the JRE needs to have the certificate imported. If you are using `./gradlew run`, then the keystore is `$JAVA_HOME/jre/lib/security/cacerts`; but if you use the `jfxDeploy` task, it will be the `build/distributions/github-desktop-notifier/runtime/jre/lib/security/cacerts` file. If you don't know what to do, look up the documentation for Java's `keytool` regarding importing certificates into a keystore.
+
+

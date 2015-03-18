@@ -1,9 +1,13 @@
 package com.jhegg.github.notifier
 
 import javafx.concurrent.Task
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 
 class LibNotifyTask extends Task {
     ProcessBuilder processBuilder
+
+    Log log = LogFactory.getLog(LibNotifyTask.class)
 
     LibNotifyTask(def commandAndArguments) {
         processBuilder = new ProcessBuilder(commandAndArguments as List<String>)
@@ -15,10 +19,14 @@ class LibNotifyTask extends Task {
         def out = new StringBuffer()
         def err = new StringBuffer()
         process.waitForProcessOutput(out, err)
+        handleErrors(process, out, err)
+    }
+
+    void handleErrors(def process, def out, def err) {
         if (process.exitValue() != 0) {
-            println "Attempting to run the following command resulted in an error: $commandAndArguments"
-            println "LibNotify stdout: $out"
-            println "LibNotify stderr: $err"
+            log.error("Attempting to run the following command resulted in an error: ${processBuilder.command()}\n" +
+                    "stdout: $out\n" +
+                    "stderr: $err")
         }
     }
 }

@@ -205,9 +205,8 @@ class App extends Application {
     void removeAppFromTray() {
         if (trayIcon) {
             primaryStage.iconifiedProperty().removeListener(minimizeWindowChangeListener)
-            Platform.runLater {
-                SystemTray tray = getSystemTray()
-                tray.remove(trayIcon)
+            EventQueue.invokeLater {
+                getSystemTray().remove(trayIcon)
                 trayIcon = null
             }
         }

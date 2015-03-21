@@ -8,3 +8,19 @@ before_install:
 
 after_success:
   - ./gradlew jacocoTestReport coveralls
+
+env:
+  global:
+   # COVERITY_SCAN_TOKEN
+   - secure: "DALX/0YO04+wHaBj0YtZhz9vMToiNl8O9p9Isw6jBvTUGMNYHDRlrtNlP8mpIC/PWv7rV/sS3zQRTzYOAvv5yUbNg9HVsGhu+PCEK4if9Tgpkqp5aOKNncPhg1eS1yi8S7fS8842UJvrN000SdIcmoxJIxps0Rx8TpZsWoCVLwk="
+
+addons:
+  coverity_scan:
+    project:
+      name: "jhegg/github-desktop-notifier"
+      description: "Build submitted via Travis CI"
+    notification_email:
+      secure: "aq3CfmRXDRO/2s3okW5pZha7i5U/p5YjNp8m5mAAhJipXFNNTMEimlvcy6Iwf4pVUv5otunnCq6VSomiNa5op5tSj834S5Yd38BkTbyZ7a6mpsD8qWdtp5r3Y+BWgQHQGHt2ptBO+MVt/U6zwBwnvI7DjJlxBXcp+V0jyL2ft/I="
+    build_command_prepend: "./gradlew clean"
+    build_command:   "./gradlew assemble"
+    branch_pattern: coverity_scan
